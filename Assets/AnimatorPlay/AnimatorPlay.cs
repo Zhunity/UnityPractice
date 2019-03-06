@@ -44,7 +44,8 @@ public class AnimatorPlay : MonoBehaviour {
 			DelayPlayAnim("Shake", time);
 		}
 
-		if (GUI.Button(new Rect(0, 400, 100, 50), "Reset"))//点击后返回true
+		// 恢复播放旋转动作
+		if (GUI.Button(new Rect(0, 400, 100, 50), "Reset"))
 		{
 			animator.Play("Roate");
 		}
