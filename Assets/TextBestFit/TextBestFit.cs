@@ -19,13 +19,15 @@ public class TextBestFit : MonoBehaviour {
 
 	private void Update()
 	{
-		if(text.preferredWidth <= MaxWidth)
+		if (text.preferredWidth <= MaxWidth)
 		{
 			text.resizeTextForBestFit = false;
 			contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
 		}
 		else
 		{
+			RectTransform tran = text.GetComponent<RectTransform>();
+			tran.sizeDelta = new Vector2(MaxWidth, tran.sizeDelta.y);
 			text.resizeTextForBestFit = true;
 			contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
 		}
