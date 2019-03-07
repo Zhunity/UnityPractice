@@ -34,7 +34,7 @@ public class Method
 	{
 		outStr = "bbbb";
 		Debug.Log("带参数且有返回值的方法");
-		return str;
+		return str + outStr;
 	}
 
 	public static string StaticMethod()
@@ -83,11 +83,13 @@ public class MethodReflection : MonoBehaviour {
 			methodInfo = type.GetMethod("Method2", new Type[] { typeof(string), typeof(int) });
 			Debug.Log(methodInfo.Invoke(reflectTest, new object[] { "测试", 100 }).ToString());
 
-			//Debug.Log();
+			Debug.Log("------------------------------");
 
-			//methodInfo = type.GetMethod("Method3", new Type[] { typeof(string), typeof(string) });
-			//string outStr = "";
-			//Debug.Log(methodInfo.Invoke(reflectTest, new object[] { "测试", outStr }).ToString());
+			methodInfo = type.GetMethod("Method3");//, new Type[] { typeof(string), typeof(string) });
+			object[] objs = new object[] { "测试", ""};
+			Debug.Log(methodInfo.Invoke(reflectTest, objs).ToString());
+			Debug.Log(objs[0]);
+			Debug.Log(objs[1]);
 
 			Debug.Log("------------------------------");
 
