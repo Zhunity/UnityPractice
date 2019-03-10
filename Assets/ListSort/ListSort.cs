@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class ListSort : MonoBehaviour
 {
-
+	/// <summary>
+	/// List.Sort 判断为正时交换两个位置
+	/// </summary>
 	public List<int> list;
 
 	private void OnGUI()
