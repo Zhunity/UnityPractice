@@ -5,6 +5,7 @@ using UnityEngine;
 public class UIAlpha : MonoBehaviour {
 	public CanvasGroup Group;
 
+	[Range(0, 1)]
 	private float _alpha;
 	public float Alpha
 	{
