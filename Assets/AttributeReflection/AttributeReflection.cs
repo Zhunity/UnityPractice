@@ -132,6 +132,11 @@ public class AttributeReflection : Reflection
 {
 	public float xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx;
 
+	public delegate void SupportedProtocolClientEventHandler();
+
+	// EventInfo https://blog.csdn.net/wf751620780/article/details/78592494
+	public event SupportedProtocolClientEventHandler SupportedProtocolEvent;
+
 	[EventAttribute("onClick", "Button")]
 	public void OnClick_Button()
 	{
