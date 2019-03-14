@@ -90,8 +90,17 @@ public class Reflection : MonoBehaviour
 			{
 				continue;
 			}
-			Debug.Log(item.Name + "  " + item.Attributes);
-			//if (!item.GetCustomAttributes(typeof(EventMethod), true))
+			//Debug.Log(item.Name + "  " + item.Attributes); // 打印OnClick_Button  Public, HideBySig
+			var objList = item.GetCustomAttributes(typeof(EventMethod), false);
+			foreach (var attr in objList)
+			{
+				if(attr is EventMethod)
+                 {
+					EventMethod exe = attr as EventMethod;
+					Debug.Log("Click Event " + item.Name + "  EventName:" + exe.EventName + " GameObjectName:" + exe.GameObjectName);
+                 }
+			}
+			//if (item.GetCustomAttributes(typeof(EventMethod), true))
 			//{
 			//	continue;
 			//}
