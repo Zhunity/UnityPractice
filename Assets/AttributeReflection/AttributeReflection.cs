@@ -18,7 +18,7 @@ using UnityEngine.UI;
 /// <summary>
 /// 事件属性
 /// </summary>
-public class EventAttribute : Attribute
+public class EventMethod : Attribute
 {
 	/// <summary>
 	/// 事件名
@@ -38,7 +38,7 @@ public class EventAttribute : Attribute
 		set;
 	}
 
-	public EventAttribute(string eventName, string gameObjectName)
+	public EventMethod(string eventName, string gameObjectName)
 	{
 		this.EventName = eventName;
 		this.GameObjectName = gameObjectName;
@@ -75,14 +75,36 @@ public class Reflection : MonoBehaviour
 
 	private void Awake()
 	{
-		_bastAttr = typeof(Reflection).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static); // 只能找到get/set方法
-		_thisAttr = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
 		//PrintAttr();
-		PrintEvent();
+		//PrintEvent();
+		//PrintMethod();
+		RegistClickEvent();
 	}
+
+	private void RegistClickEvent()
+	{
+		MethodInfo[] thisMethodInfo = this.GetType().GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+		foreach (var item in thisMethodInfo)
+		{
+			if(item.ReflectedType != item.DeclaringType)
+			{
+				continue;
+			}
+			Debug.Log(item.Name + "  " + item.Attributes);
+			//if (!item.GetCustomAttributes(typeof(EventMethod), true))
+			//{
+			//	continue;
+			//}
+		}
+	}
+
+	// ReflectedType 现在反射的类型
+	// DeclaringType 定义的类型
 
 	private void PrintAttr()
 	{
+		_bastAttr = typeof(Reflection).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static); // 只能找到get/set方法
+		_thisAttr = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
 		Debug.LogError("-----------------------Reflection Attr Begin-----------------------");
 		int count = 0;
 		foreach (var item in _bastAttr)
@@ -105,7 +127,7 @@ public class Reflection : MonoBehaviour
 
 	private void PrintEvent()
 	{
-		EventInfo[] baseEventInfo = typeof(Reflection).GetEvents(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static); // 只能找到get/set方法
+		EventInfo[] baseEventInfo = typeof(Reflection).GetEvents(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static); 
 		EventInfo[] thisEventInfo = this.GetType().GetEvents(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
 		Debug.LogError("-----------------------Reflection Event Begin-----------------------");
 		int count = 0;
@@ -126,6 +148,30 @@ public class Reflection : MonoBehaviour
 		}
 		Debug.LogError("-----------------------GameObject Event End-----------------------");
 	}
+
+	private void PrintMethod()
+	{
+		MethodInfo[] baseMethodInfo = typeof(Reflection).GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+		Debug.LogError("-----------------------Reflection Method Begin-----------------------");
+		int count = 0;
+		foreach (var item in baseMethodInfo)
+		{
+			Debug.Log(count++ + "\nName: " + item.Name + "\n ReflectedType:" + item.ReflectedType
+				+ "\n DeclaringType:" + item.DeclaringType + "\n GetType:" + item.GetType() + "\n MemberType:" + item.MemberType + "\n ToString:" + item.ToString());
+		}
+		Debug.LogError("-----------------------Reflection Method End-----------------------");
+
+		MethodInfo[] thisMethodInfo = this.GetType().GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+		Debug.LogError("-----------------------GameObject Method Begin-----------------------");
+		Debug.Log(this.GetType());
+		count = 0;
+		foreach (var item in thisMethodInfo)
+		{
+			Debug.Log(count++ + "\nName: " + item.Name + "\n ReflectedType:" + item.ReflectedType
+				+ "\n DeclaringType:" + item.DeclaringType + "\n GetType:" + item.GetType() + "\n MemberType:" + item.MemberType + "\n ToString:" + item.ToString());
+		}
+		Debug.LogError("-----------------------GameObject Method End-----------------------");
+	}
 }
 
 public class AttributeReflection : Reflection
@@ -137,7 +183,7 @@ public class AttributeReflection : Reflection
 	// EventInfo https://blog.csdn.net/wf751620780/article/details/78592494
 	public event SupportedProtocolClientEventHandler SupportedProtocolEvent;
 
-	[EventAttribute("onClick", "Button")]
+	[EventMethod("onClick", "Button")]
 	public void OnClick_Button()
 	{
 		Debug.Log("Attribute Reflection");
