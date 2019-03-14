@@ -38,10 +38,13 @@ public class EventMethod : Attribute
 		set;
 	}
 
-	public EventMethod(string eventName, string gameObjectName)
+	public Type ComponentType;
+
+	public EventMethod(string eventName, string gameObjectName, Type componentType)
 	{
 		this.EventName = eventName;
 		this.GameObjectName = gameObjectName;
+		this.ComponentType = componentType;
 	}
 }
 
@@ -94,17 +97,68 @@ public class Reflection : MonoBehaviour
 			var objList = item.GetCustomAttributes(typeof(EventMethod), false);
 			foreach (var attr in objList)
 			{
-				if(attr is EventMethod)
+				// https://www.cnblogs.com/mq0036/p/7844369.html
+				if (attr is EventMethod)
                  {
 					EventMethod exe = attr as EventMethod;
 					Debug.Log("Click Event " + item.Name + "  EventName:" + exe.EventName + " GameObjectName:" + exe.GameObjectName);
-                 }
+					Type type = exe.ComponentType;
+					var button = GetChildComponent<type>(exe.GameObjectName);
+					Debug.Log(button);
+
+				 }
 			}
 			//if (item.GetCustomAttributes(typeof(EventMethod), true))
 			//{
 			//	continue;
 			//}
 		}
+	}
+
+	public T GetChildComponent<T>(string name) where T : Component
+	{
+		GameObject obj = GetChild(name);
+		if(obj != null)
+		{
+			return obj.GetComponent<T>();
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	public GameObject GetChild(string name)
+	{
+		return GetChild(this.gameObject, name);
+	}
+
+	public GameObject GetChild(GameObject root, string name)
+	{
+		if(root == null)
+		{
+			return null;
+		}
+
+		if(string.IsNullOrEmpty(name))
+		{
+			return null;
+		}
+
+		if(root.name == name)
+		{
+			return root;
+		}
+
+		foreach(Transform child in root.transform)
+		{
+			var target = GetChild(child.gameObject, name);
+			if(target != null)
+			{
+				return target;
+			}
+		}
+		return null;
 	}
 
 	// ReflectedType 现在反射的类型
@@ -192,7 +246,7 @@ public class AttributeReflection : Reflection
 	// EventInfo https://blog.csdn.net/wf751620780/article/details/78592494
 	public event SupportedProtocolClientEventHandler SupportedProtocolEvent;
 
-	[EventMethod("onClick", "Button")]
+	[EventMethod("onClick", "Button", typeof(Button))]
 	public void OnClick_Button()
 	{
 		Debug.Log("Attribute Reflection");
