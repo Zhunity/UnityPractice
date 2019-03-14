@@ -102,8 +102,7 @@ public class Reflection : MonoBehaviour
                  {
 					EventMethod exe = attr as EventMethod;
 					Debug.Log("Click Event " + item.Name + "  EventName:" + exe.EventName + " GameObjectName:" + exe.GameObjectName);
-					Type type = exe.ComponentType;
-					var button = GetChildComponent<type>(exe.GameObjectName);
+					var button = GetChildComponent(exe.GameObjectName, exe.ComponentType);
 					Debug.Log(button);
 
 				 }
@@ -115,12 +114,12 @@ public class Reflection : MonoBehaviour
 		}
 	}
 
-	public T GetChildComponent<T>(string name) where T : Component
+	public Component GetChildComponent(string name, Type type)
 	{
 		GameObject obj = GetChild(name);
 		if(obj != null)
 		{
-			return obj.GetComponent<T>();
+			return obj.GetComponent(type);
 		}
 		else
 		{
