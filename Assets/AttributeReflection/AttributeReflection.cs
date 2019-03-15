@@ -78,6 +78,7 @@ public class Reflection : MonoBehaviour
 
 	private void Awake()
 	{
+		//PrintMember();
 		//PrintAttr();
 		//PrintEvent();
 		//PrintMethod();
@@ -86,7 +87,8 @@ public class Reflection : MonoBehaviour
 
 	private void RegistClickEvent()
 	{
-		MethodInfo[] thisMethodInfo = this.GetType().GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+		var thisMethodInfo = this.GetType().GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+		var thisMemberInfo = this.GetType().GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
 		foreach (var item in thisMethodInfo)
 		{
 			if(item.ReflectedType != item.DeclaringType)
@@ -104,8 +106,18 @@ public class Reflection : MonoBehaviour
 					Debug.Log("Click Event " + item.Name + "  EventName:" + exe.EventName + " GameObjectName:" + exe.GameObjectName);
 					var button = GetChildComponent(exe.GameObjectName, exe.ComponentType);
 					Debug.Log(button);
+					MemberInfo[] a= button.GetType().GetMember(exe.EventName);
+					//methodInfo.Invoke(reflectTest, new object[] { "测试" })
+					int count = 0;
+					foreach(var b in a)
+					{
+						Debug.Log(count++ + "\nName: " + b.Name + "\n ReflectedType:" + b.ReflectedType
+				+ "\n DeclaringType:" + b.DeclaringType + "\n GetType:" + b.GetType() + "\n MemberType:" + b.MemberType + "\n ToString:" + b.ToString());
+					}
 
-				 }
+					var field = button.GetType().GetField(exe.EventName);
+					Debug.Log(field.GetType() + "   " + exe.EventName);
+				}
 			}
 			//if (item.GetCustomAttributes(typeof(EventMethod), true))
 			//{
@@ -162,10 +174,34 @@ public class Reflection : MonoBehaviour
 
 	// ReflectedType 现在反射的类型
 	// DeclaringType 定义的类型
+	private void PrintMember()
+	{
+		var bastMembers = typeof(Reflection).GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static); // 只能找到get/set方法
+		var _thisMembers = this.GetType().GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+		Debug.LogError("-----------------------Reflection Member Begin-----------------------");
+		int count = 0;
+		foreach (var item in bastMembers)
+		{
+			Debug.Log(count++ + "\nName: " + item.Name + "\n ReflectedType:" + item.ReflectedType
+				+ "\n DeclaringType:" + item.DeclaringType + "\n GetType:" + item.GetType() + "\n MemberType:" + item.MemberType + "\n ToString:" + item.ToString());
+		}
+		Debug.LogError("-----------------------Reflection Member End-----------------------");
+
+		Debug.LogError("-----------------------GameObject Member Begin-----------------------");
+		Debug.Log(this.GetType());
+		count = 0;
+		foreach (var item in _thisMembers)
+		{
+			Debug.Log(count++ + "\nName: " + item.Name + "\n ReflectedType:" + item.ReflectedType
+				+ "\n DeclaringType:" + item.DeclaringType + "\n GetType:" + item.GetType() + "\n MemberType:" + item.MemberType + "\n ToString:" + item.ToString());
+		}
+		Debug.LogError("-----------------------GameObject Member End-----------------------");
+	}
+
 
 	private void PrintAttr()
 	{
-		_bastAttr = typeof(Reflection).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static); // 只能找到get/set方法
+		_bastAttr = typeof(Button).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static); // 只能找到get/set方法
 		_thisAttr = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
 		Debug.LogError("-----------------------Reflection Attr Begin-----------------------");
 		int count = 0;
