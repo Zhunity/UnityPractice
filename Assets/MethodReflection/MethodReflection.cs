@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class Method
@@ -41,6 +42,11 @@ public class Method
 	{
 		Debug.Log("静态方法");
 		return "cccc";
+	}
+
+	public static void AddListener(UnityAction action)
+	{
+
 	}
 }
 

@@ -3,17 +3,35 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
+/*
 // https://www.zhihu.com/question/37329635/answer/71500828
 //Type类的方法：
-	//GetConstructor(), GetConstructors()：返回ConstructorInfo类型，用于取得该类的构造函数的信息；
-	//GetEvent(), GetEvents()：返回EventInfo类型，用于取得该类的事件的信息；
-	//GetField(), GetFields()：返回FieldInfo类型，用于取得该类的字段（成员变量）的信息；
-	//GetInterface(), GetInterfaces()：返回InterfaceInfo类型，用于取得该类实现的接口的信息；
-	//GetMember(), GetMembers()：返回MemberInfo类型，用于取得该类的所有成员的信息；
-	//GetMethod(), GetMethods()：返回MethodInfo类型，用于取得该类的方法的信息；
-	//GetProperty(), GetProperties()：返回PropertyInfo类型，用于取得该类的属性的信息。
+//GetConstructor(), GetConstructors()：返回ConstructorInfo类型，用于取得该类的构造函数的信息；
+//GetEvent(), GetEvents()：返回EventInfo类型，用于取得该类的事件的信息；
+//GetField(), GetFields()：返回FieldInfo类型，用于取得该类的字段（成员变量）的信息；
+//GetInterface(), GetInterfaces()：返回InterfaceInfo类型，用于取得该类实现的接口的信息；
+//GetMember(), GetMembers()：返回MemberInfo类型，用于取得该类的所有成员的信息；
+//GetMethod(), GetMethods()：返回MethodInfo类型，用于取得该类的方法的信息；
+//GetProperty(), GetProperties()：返回PropertyInfo类型，用于取得该类的属性的信息。
+*/
+
+/*
+ * MSDN MethodInfo解释
+ * //https://docs.microsoft.com/zh-cn/dotnet/api/system.reflection.methodinfo?redirectedfrom=MSDN&view=netframework-4.7.2
+ */
+
+/*
+// MSDN MemberInfo 解释
+//https://docs.microsoft.com/en-us/dotnet/api/system.reflection.memberinfo?redirectedfrom=MSDN&view=netframework-4.7.2
+*/
+
+/*
+ * // Attribute使用
+ * // https://www.cnblogs.com/mq0036/p/7844369.html
+ */
 
 /// <summary>
 /// 事件属性
@@ -95,60 +113,36 @@ public class Reflection : MonoBehaviour
 			{
 				continue;
 			}
-			//Debug.Log(item.Name + "  " + item.Attributes); // 打印OnClick_Button  Public, HideBySig
 			var objList = item.GetCustomAttributes(typeof(EventMethod), false);
 			foreach (var attr in objList)
 			{
-				// Attribute使用
-				// https://www.cnblogs.com/mq0036/p/7844369.html
+				
 				if (attr is EventMethod)
                  {
 					EventMethod exe = attr as EventMethod;
 					Debug.Log("Click Event " + item.Name + "  EventName:" + exe.EventName + " GameObjectName:" + exe.GameObjectName);
 					var button = GetChildComponent(exe.GameObjectName, exe.ComponentType);
-					Debug.Log(button);
-					MemberInfo[] memberInfo= button.GetType().GetMember(exe.EventName);
-					int count = 0;
-					// MemberInfo
-					//https://docs.microsoft.com/en-us/dotnet/api/system.reflection.memberinfo?redirectedfrom=MSDN&view=netframework-4.7.2
-					foreach (var member in memberInfo)
-					{
-						//		Debug.Log(count++ + "\nName: " + member.Name + "\n ReflectedType:" + member.ReflectedType
-						//+ "\n DeclaringType:" + member.DeclaringType + "\n GetType:" + member.GetType() + "\n MemberType:" + member.MemberType + "\n ToString:" + member.ToString());
+				//	MemberInfo[] memberInfo= button.GetType().GetMember(exe.EventName);
+				//	int count = 0;
+				//	foreach (var member in memberInfo)
+				//	{
+				//		Debug.Log(count++ + "\nName: " + member.Name + "\n ReflectedType:" + member.ReflectedType
+				//+ "\n DeclaringType:" + member.DeclaringType + "\n GetType:" + member.GetType() + "\n MemberType:" + member.MemberType + "\n ToString:" + member.ToString());
+				////		MethodInfo addListener = button.GetType().GetMethod("AddListener");
+				////		Debug.Log(count++ + "\nName: " + addListener.Name + "\n ReflectedType:" + addListener.ReflectedType
+				////+ "\n DeclaringType:" + addListener.DeclaringType + "\n GetType:" + addListener.GetType() + "\n MemberType:" + addListener.MemberType
+				////+ "\n ToString:" + addListener.ToString());
+				//	}
 
-						if (member.MemberType == MemberTypes.Property)
-						{
-							// 找到set_eventName
-							foreach (MethodInfo am in ((PropertyInfo)member).GetAccessors())
-							{
-								//	Debug.Log(count++ + "\nName: " + am.Name + "\n ReflectedType:" + am.ReflectedType
-								//+ "\n DeclaringType:" + am.DeclaringType + "\n GetType:" + am.GetType() + "\n MemberType:" + am.MemberType + "\n ToString:" + am.ToString());
-								if (am.MemberType == MemberTypes.Method)
-								{
-									// MethodInfo
-									//https://docs.microsoft.com/zh-cn/dotnet/api/system.reflection.methodinfo?redirectedfrom=MSDN&view=netframework-4.7.2
-									//am.Invoke(button, new object[] { item.GetMethodBody()});
-									foreach (ParameterInfo pi in ((MethodInfo)am).GetParameters())
-									{
-										Debug.Log(count++ + string.Format("   Parameter: Type={0}, Name={1}", pi.ParameterType, pi.Name));
-									}
-								}
-							}
-						}
+					var property = button.GetType().GetProperty(exe.EventName);
+					Debug.Log(property.PropertyType);
 
-					}
-
-					var field = button.GetType().GetField(exe.EventName);
-					Debug.Log("field " + field +  "   " + exe.EventName);
 					
-					var event1 = button.GetType().GetEvent(exe.EventName);
-					Debug.Log("event " + event1 + "   " + exe.EventName);
+					var method = property.PropertyType.GetMethod("AddListener");
+					UnityAction target = () => { item.Invoke(this, null);  };
+					method.Invoke(property.GetValue(button, null), new object[] { target });
 				}
 			}
-			//if (item.GetCustomAttributes(typeof(EventMethod), true))
-			//{
-			//	continue;
-			//}
 		}
 	}
 
