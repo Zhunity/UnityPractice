@@ -99,6 +99,7 @@ public class Reflection : MonoBehaviour
 			var objList = item.GetCustomAttributes(typeof(EventMethod), false);
 			foreach (var attr in objList)
 			{
+				// Attribute使用
 				// https://www.cnblogs.com/mq0036/p/7844369.html
 				if (attr is EventMethod)
                  {
@@ -106,17 +107,42 @@ public class Reflection : MonoBehaviour
 					Debug.Log("Click Event " + item.Name + "  EventName:" + exe.EventName + " GameObjectName:" + exe.GameObjectName);
 					var button = GetChildComponent(exe.GameObjectName, exe.ComponentType);
 					Debug.Log(button);
-					MemberInfo[] a= button.GetType().GetMember(exe.EventName);
-					//methodInfo.Invoke(reflectTest, new object[] { "测试" })
+					MemberInfo[] memberInfo= button.GetType().GetMember(exe.EventName);
 					int count = 0;
-					foreach(var b in a)
+					// MemberInfo
+					//https://docs.microsoft.com/en-us/dotnet/api/system.reflection.memberinfo?redirectedfrom=MSDN&view=netframework-4.7.2
+					foreach (var member in memberInfo)
 					{
-						Debug.Log(count++ + "\nName: " + b.Name + "\n ReflectedType:" + b.ReflectedType
-				+ "\n DeclaringType:" + b.DeclaringType + "\n GetType:" + b.GetType() + "\n MemberType:" + b.MemberType + "\n ToString:" + b.ToString());
+						//		Debug.Log(count++ + "\nName: " + member.Name + "\n ReflectedType:" + member.ReflectedType
+						//+ "\n DeclaringType:" + member.DeclaringType + "\n GetType:" + member.GetType() + "\n MemberType:" + member.MemberType + "\n ToString:" + member.ToString());
+
+						if (member.MemberType == MemberTypes.Property)
+						{
+							// 找到set_eventName
+							foreach (MethodInfo am in ((PropertyInfo)member).GetAccessors())
+							{
+								//	Debug.Log(count++ + "\nName: " + am.Name + "\n ReflectedType:" + am.ReflectedType
+								//+ "\n DeclaringType:" + am.DeclaringType + "\n GetType:" + am.GetType() + "\n MemberType:" + am.MemberType + "\n ToString:" + am.ToString());
+								if (am.MemberType == MemberTypes.Method)
+								{
+									// MethodInfo
+									//https://docs.microsoft.com/zh-cn/dotnet/api/system.reflection.methodinfo?redirectedfrom=MSDN&view=netframework-4.7.2
+									//am.Invoke(button, new object[] { item.GetMethodBody()});
+									foreach (ParameterInfo pi in ((MethodInfo)am).GetParameters())
+									{
+										Debug.Log(count++ + string.Format("   Parameter: Type={0}, Name={1}", pi.ParameterType, pi.Name));
+									}
+								}
+							}
+						}
+
 					}
 
 					var field = button.GetType().GetField(exe.EventName);
-					Debug.Log(field.GetType() + "   " + exe.EventName);
+					Debug.Log("field " + field +  "   " + exe.EventName);
+					
+					var event1 = button.GetType().GetEvent(exe.EventName);
+					Debug.Log("event " + event1 + "   " + exe.EventName);
 				}
 			}
 			//if (item.GetCustomAttributes(typeof(EventMethod), true))
