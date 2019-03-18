@@ -105,6 +105,7 @@ public class Reflection : MonoBehaviour
 
 	private void RegistClickEvent()
 	{
+		Debug.Log("------------------BUtton-----------------------" + this.gameObject.name);
 		var thisMethodInfo = this.GetType().GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
 		var thisMemberInfo = this.GetType().GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
 		foreach (var item in thisMethodInfo)
@@ -304,6 +305,6 @@ public class AttributeReflection : Reflection
 	[EventMethod("onClick", "Button", typeof(Button))]
 	public void OnClick_Button()
 	{
-		Debug.Log("Attribute Reflection");
+		Debug.Log("Attribute Reflection " + gameObject.name);
 	}
 }
