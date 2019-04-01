@@ -22,14 +22,24 @@ public class NumPoint : MonoBehaviour {
 		Debug.Log("result.ToString(f2) " + result.ToString("f2"));
 		Debug.Log("String.Format({ 0:N2}, result) " + String.Format("{0:N2}", result));
 		Debug.Log("result.ToString(#0.00) " + result.ToString("#0.00"));
+		Debug.Log("result.ToString(#0.00%) " + result.ToString("#0.00%"));
+		Debug.Log("result.ToString(P) " + result.ToString("P"));
 
-
+		Debug.Log("---------------------------------------------------------------");
 		result = 1;
 		Debug.Log("decimal.Round(decimal.Parse(result.ToString()), 2) " + decimal.Round(decimal.Parse(result.ToString()), 2));
 		Debug.Log("Math.Round(result, 2) " + Math.Round(result, 2));
 		Debug.Log("result.ToString(f2) " + result.ToString("f2"));
 		Debug.Log("String.Format({ 0:N2}, result) " + String.Format("{0:N2}", result));
 		Debug.Log("result.ToString(#0.00) " + result.ToString("#0.00"));
+		Debug.Log("result.ToString(#0.00%) " + result.ToString("#0.00%"));
+		Debug.Log("result.ToString(P) " + result.ToString("P"));
+
+		Debug.Log("---------------------------------------------------------------");
+		Debug.Log("b / 7 " + (b / 7));
+		Debug.Log("(float)b / 7 " + ((float)b / 7));
+		Debug.Log("b / 7f " + (b / 7f));
+		Debug.Log("(float)b / 7f " + ((float)b / 7f));
 	}
 	
 }
