@@ -6,32 +6,122 @@ using UnityEngine;
 
 public class DictionaryGet : MonoBehaviour {
 	void Start () {
-		Dictionary<int, TestType> dict = new Dictionary<int, TestType>();
+		Dictionary<int, TestClass> dict = new Dictionary<int, TestClass>();
 
-		dict[1] = new TestType(1);
-		dict.Add(2, null);
+		dict[1] = new TestClass(1);
+		dict.Add(2, null); // null 可以添加到Dictionary里面，并且可以取出来
+		dict.Add(3, new TestClass());
+		Debug.Log("Count:" + dict.Count);
+
 		try
 		{
-			Debug.Log(dict[2].ToString());
+			var info = dict[2];
+			PrintInfo(info, "dict[2]  ");
+
+			Debug.Log("dict.ContainsKey(2)    " + dict.ContainsKey(2).ToString()); // 可以找得到空的
+
+			dict[2] = new TestClass(100);
+			PrintInfo(info, "change info  ");
+			PrintInfo(dict[2], "change dict[2]  ");
 		}
 		catch(Exception e)
 		{
 			Debug.LogError(e.ToString());
 		}
 	}
+
+	private void PrintInfo(TestClass info, string desc)
+	{
+		if (info == null)
+		{
+			Debug.Log(desc + "null");
+		}
+		else
+		{
+			Debug.Log(desc + info.ToString());
+		}
+	}
 }
 
-public class TestType
+public struct TestStruct
 {
-	int data = 1;
+	int data;// = 9999; Assets/DictionaryGet/DictionaryGet.cs(48,2): error CS0573: 'TestStruct': Structs cannot have instance property or field initializers
+			 // TestStruct testStruct1; Assets/DictionaryGet/DictionaryGet.cs(49,13): error CS0523: Struct member `TestStruct.testStruct1' of type `TestStruct' causes a cycle in the struct layout
+	TestClass testClass;
 
-	public TestType(int i)
+	// Assets/DictionaryGet/DictionaryGet.cs(52,9): error CS0568: Structs cannot contain explicit parameterless constructors
+	//public TestStruct()
+	//{
+	//}
+}
+
+public class TestClass
+{
+	int data = -9999;
+	TestStruct testStruct;
+	TestClass testClass;
+
+	public TestClass()
+	{
+
+	}
+
+	public TestClass(int i)
 	{
 		data = i;
 	}
 
+	/// <summary>
+	/// Assets/DictionaryGet/DictionaryGet.cs(76,3): error CS1604: Cannot assign to `this' because it is read-only
+	/// </summary>
+	/// <param name="testClass"></param>
+	//public TestClass(TestClass testClass)
+	//{
+	//	this = testClass;
+	//}
+
+	public TestClass(TestClass testClass, TestStruct testStruct)
+	{
+		this.testClass = testClass;
+		this.testStruct = testStruct;
+	}
+
+	public void PrintTestClass(string desc)
+	{
+		if (this.testClass == null)
+		{
+			Debug.Log(desc + "null");
+		}
+		else
+		{
+			Debug.Log(desc + this.testClass.ToString());
+		}
+	}
+
+	public void PrintTestStruct(string desc)
+	{
+		// Assets/DictionaryGet/DictionaryGet.cs(103,12): error CS0019: Operator `==' cannot be applied to operands of type `TestStruct' and `null'
+		//if (this.testStruct == null)
+		//{
+		//	Debug.Log(desc + "null");
+		//}
+		//else
+		//{
+		Debug.Log(desc + this.testStruct.ToString());
+		//}
+	}
+
 	public override string ToString()
 	{
-		return "data:" + data;
+		// 判断自身为空并没有什么卵用
+		if(this == null)
+		{
+			return "null";
+		}
+		else
+		{
+			return "data:" + data;
+		}
+		
 	}
 }
