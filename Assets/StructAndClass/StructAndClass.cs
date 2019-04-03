@@ -42,6 +42,10 @@ public class StructAndClass : MonoBehaviour
 
 		// 测试容器类型
 		PrintInfo(list[0], "origin change before list[0]: ");
+
+		// 测试struct中的类
+		TestStruct tStruct = new TestStruct(origin);
+		tStruct.PrintTestClass("origin change before tStruct.testClass: ");
 		Debug.Log("--------------------------------赋值 end------------------------------------------");
 		// --------------------------------赋值------------------------------------------
 		origin.SetData(10);
@@ -53,6 +57,7 @@ public class StructAndClass : MonoBehaviour
 		testConstructor.PrintTestClass("origin change after testConstructor: ");// 测试构造函数
 		testConstructor.PrintTestClass("origin change after testMethod: ");// 测试函数赋值
 		PrintInfo(list[0], "origin change after list[0]: ");// 测试容器类型
+		tStruct.PrintTestClass("origin change after tStruct.testClass: ");// 测试struct中的类
 		Debug.Log("--------------------------------改data之后 end------------------------------------------");
 		// --------------------------------改data之后------------------------------------------
 
@@ -64,6 +69,7 @@ public class StructAndClass : MonoBehaviour
 		testConstructor.PrintTestClass("testEqual change after testConstructor: ");// 测试构造函数
 		testConstructor.PrintTestClass("testEqual change after testMethod: ");// 测试函数赋值
 		PrintInfo(list[0], "testEqual change after list[0]: ");// 测试容器类型
+		tStruct.PrintTestClass("testEqual change after tStruct.testClass: ");// 测试struct中的类
 		Debug.Log("--------------------------------改testEqual之后 end------------------------------------------");
 		// --------------------------------改testEqual之后------------------------------------------
 	}
@@ -87,13 +93,45 @@ public class StructAndClass : MonoBehaviour
 public struct TestStruct
 {
 	int data;// = 9999; Assets/DictionaryGet/DictionaryGet.cs(48,2): error CS0573: 'TestStruct': Structs cannot have instance property or field initializers
-			 // TestStruct testStruct1; Assets/DictionaryGet/DictionaryGet.cs(49,13): error CS0523: Struct member `TestStruct.testStruct1' of type `TestStruct' causes a cycle in the struct layout
-	TestClass testClass;
+	
+	// TestStruct testStruct1; Assets/DictionaryGet/DictionaryGet.cs(49,13): error CS0523: Struct member `TestStruct.testStruct1' of type `TestStruct' causes a cycle in the struct layout
+	TestClass testClass; // struct 默认也是private?
 
 	// Assets/DictionaryGet/DictionaryGet.cs(52,9): error CS0568: Structs cannot contain explicit parameterless constructors
 	//public TestStruct()
 	//{
 	//}
+
+	// 带个没用的参数就可以了。。。。
+	public TestStruct(string str)
+	{
+		data = 9999;
+		testClass = new TestClass();
+	}
+
+	public TestStruct(int num)
+	{
+		data = num;
+		testClass = new TestClass(num);
+	}
+
+	public TestStruct(TestClass info)
+	{
+		data = info.GetData();
+		testClass = info;
+	}
+
+	public void PrintTestClass(string desc = "")
+	{
+		if (this.testClass == null)
+		{
+			Debug.Log(desc + "null  data: " + data);
+		}
+		else
+		{
+			Debug.Log(desc + this.testClass.ToString()  +" data: " + data);
+		}
+	}
 }
 
 public class TestClass
@@ -141,6 +179,11 @@ public class TestClass
 	public void SetData(int num)
 	{
 		data = num;
+	}
+
+	public int GetData()
+	{
+		return data;
 	}
 
 	public void SetTestClass(TestClass testClass)
