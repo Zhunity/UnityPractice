@@ -19,9 +19,28 @@ using UnityEngine.UI;
 */
 
 /*
- * MSDN MethodInfo解释
- * //https://docs.microsoft.com/zh-cn/dotnet/api/system.reflection.methodinfo?redirectedfrom=MSDN&view=netframework-4.7.2
- */
+ * https://www.cnblogs.com/wangchuang/p/4923621.html
+ * 1）使用Assembly定义和加载程序集，加载在程序集清单中列出模块，以及从此程序集中查找类型并创建该类型的实例。
+
+（2）使用Module了解包含模块的程序集以及模块中的类等，还可以获取在模块上定义的所有全局方法或其他特定的非全局方法。
+
+（3）使用ConstructorInfo了解构造函数的名称、参数、访问修饰符（如pulic 或private）和实现详细信息（如abstract或virtual）等。使用Type的GetConstructors或GetConstructor方法来调用特定的构造函数。
+
+（4）使用MethodInfo了解方法的名称、返回类型、参数、访问修饰符（如pulic 或private）和实现详细信息（如abstract或virtual）等。使用Type的GetMethods或GetMethod方法来调用特定的方法。
+
+（5）使用FiedInfo了解字段的名称、访问修饰符（如public或private）和实现详细信息（如static）等，并获取或设置字段值。
+
+（6）使用EventInfo了解事件的名称、事件处理程序数据类型、自定义属性、声明类型和反射类型等，添加或移除事件处理程序。
+
+（7）使用PropertyInfo了解属性的名称、数据类型、声明类型、反射类型和只读或可写状态等，获取或设置属性值。
+
+（8）使用ParameterInfo了解参数的名称、数据类型、是输入参数还是输出参数，以及参数在方法签名中的位置等。
+ * /
+
+/*
+* MSDN MethodInfo解释
+* //https://docs.microsoft.com/zh-cn/dotnet/api/system.reflection.methodinfo?redirectedfrom=MSDN&view=netframework-4.7.2
+*/
 
 /*
 // MSDN MemberInfo 解释
@@ -99,8 +118,8 @@ public class Reflection : MonoBehaviour
 		//PrintMember();
 		//PrintAttr();
 		//PrintEvent();
-		//PrintMethod();
-		RegistClickEvent();
+		PrintMethod();
+		//RegistClickEvent();
 	}
 
 	private void RegistClickEvent()
@@ -270,26 +289,48 @@ public class Reflection : MonoBehaviour
 
 	private void PrintMethod()
 	{
+		// 6
+		// Name: GetChild
+		// ReflectedType:Reflection
+		// DeclaringType:Reflection
+		// GetType:System.Reflection.MonoMethod
+		// MemberType:Method
+		// ToString:UnityEngine.GameObject GetChild(System.String)
+
+
 		MethodInfo[] baseMethodInfo = typeof(Reflection).GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
 		Debug.LogError("-----------------------Reflection Method Begin-----------------------");
 		int count = 0;
 		foreach (var item in baseMethodInfo)
 		{
-			Debug.Log(count++ + "\nName: " + item.Name + "\n ReflectedType:" + item.ReflectedType
+			Debug.Log(count + " ---------------------------------------------------------- begin");
+			Debug.Log("\nName: " + item.Name + "\n ReflectedType:" + item.ReflectedType
 				+ "\n DeclaringType:" + item.DeclaringType + "\n GetType:" + item.GetType() + "\n MemberType:" + item.MemberType + "\n ToString:" + item.ToString());
+
+
+			ParameterInfo[] parameter = item.GetParameters();
+			// 打印参数类型
+			int parameterInfoCount = 0;
+			foreach (ParameterInfo pi in parameter)
+			{
+				Debug.Log(parameterInfoCount++ + string.Format("   Parameter: Type={0}, Name={1}", pi.ParameterType, pi.Name));
+			}
+			// 打印返回类型
+			Debug.Log("returnType " + item.ReturnType);
+			Debug.Log(count + " ---------------------------------------------------------- end");
 		}
 		Debug.LogError("-----------------------Reflection Method End-----------------------");
 
-		MethodInfo[] thisMethodInfo = this.GetType().GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
-		Debug.LogError("-----------------------GameObject Method Begin-----------------------");
-		Debug.Log(this.GetType());
-		count = 0;
-		foreach (var item in thisMethodInfo)
-		{
-			Debug.Log(count++ + "\nName: " + item.Name + "\n ReflectedType:" + item.ReflectedType
-				+ "\n DeclaringType:" + item.DeclaringType + "\n GetType:" + item.GetType() + "\n MemberType:" + item.MemberType + "\n ToString:" + item.ToString());
-		}
-		Debug.LogError("-----------------------GameObject Method End-----------------------");
+		//MethodInfo[] thisMethodInfo = this.GetType().GetMethods(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+		//Debug.LogError("-----------------------GameObject Method Begin-----------------------");
+		//Debug.Log(this.GetType());
+		//count = 0;
+		//foreach (var item in thisMethodInfo)
+		//{
+		//	Debug.Log(count++ + "\nName: " + item.Name + "\n ReflectedType:" + item.ReflectedType
+		//		+ "\n DeclaringType:" + item.DeclaringType + "\n GetType:" + item.GetType() + "\n MemberType:" + item.MemberType + "\n ToString:" + item.ToString());
+		//}
+		//Debug.LogError("-----------------------GameObject Method End-----------------------");
 	}
 }
 

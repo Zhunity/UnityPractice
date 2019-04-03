@@ -110,7 +110,6 @@ namespace SMFrame
 							{
 								FieldInfo field = (FieldInfo)member;
 								MethodInfo method = field.FieldType.GetMethod("AddListener");
-								ParameterInfo[] parameter = method.GetParameters();
 								UnityAction target = () => { item.Invoke(this, null); };
 								method.Invoke(field.GetValue(control), new object[] { target, false});
 							}
