@@ -120,10 +120,12 @@ namespace SMFrame
 
 								ParameterInfo[] listenerParameter = listenerMethod.GetParameters(); // AddListener只有一个参数
 								Type paramType = listenerParameter[0].ParameterType;
+
+
 								object param = paramType.Assembly.CreateInstance(listenerParameter[0].Name); // 创建AddListen参数实例
 								if(param == null)
 								{
-									Debug.Log("为什么不行!!!!!!");
+									Debug.Log("为什么不行!!!!!! " + paramType + "  " + listenerParameter[0].Name + "  " + paramType.Assembly.FullName);
 								}
 								else
 								{
