@@ -121,16 +121,20 @@ namespace SMFrame
 								ParameterInfo[] listenerParameter = listenerMethod.GetParameters(); // AddListener只有一个参数
 								Type paramType = listenerParameter[0].ParameterType;
 								object param = paramType.Assembly.CreateInstance(listenerParameter[0].Name); // 创建AddListen参数实例
+								if(param == null)
+								{
+									Debug.Log("为什么不行!!!!!!");
+								}
+								else
+								{
+									Debug.Log(param.ToString() + "   " + param.GetType());
+								}
 
+								// 1、怎么根据listenerParameter新建一个事件类型，如UnityAction<bool>
+								// 2、怎么根据eventParameter，新建lambda表示式或者delegate之类的，并赋值给listenerMethod
 
 								ParameterInfo[] eventParameter = eventMethod.GetParameters();
 								object[] eventParams = new object[eventParameter.Length];
-								//var hh = delegate (eventParams)
-								//{ eventMethod.Invoke(this, eventParams); };
-
-								TestDelegate(delegate (int a)
-									{
-									});
 
 								DebugMethod(listenerMethod);
 
@@ -148,7 +152,7 @@ namespace SMFrame
 			}
 		}
 
-		private void TestDelegate(Action<int> fun)
+		private void TestDelegate(Action fun)
 		{
 			if(fun != null)
 			{
