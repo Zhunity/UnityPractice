@@ -116,21 +116,20 @@ namespace SMFrame
 							{
 								FieldInfo field = (FieldInfo)member;
 								MethodInfo listenerMethod = field.FieldType.GetMethod("AddListener");
-								UnityAction<bool> target = (value) => { eventMethod.Invoke(this, new object[] { value }); };
+								//UnityAction<bool> target = (value) => { eventMethod.Invoke(this, new object[] { value }); };
 
 								ParameterInfo[] listenerParameter = listenerMethod.GetParameters(); // AddListener只有一个参数
 								Type paramType = listenerParameter[0].ParameterType;
 
+								DebugMethod(listenerMethod);
 
-								object param = paramType.Assembly.CreateInstance(listenerParameter[0].Name); // 创建AddListen参数实例
-								if(param == null)
-								{
-									Debug.Log("为什么不行!!!!!! " + paramType + "  " + listenerParameter[0].Name + "  " + paramType.Assembly.FullName);
-								}
-								else
-								{
-									Debug.Log(param.ToString() + "   " + param.GetType());
-								}
+
+								Debug.Log(paramType);
+								DebugMethod(eventMethod);
+
+								var target = Delegate.CreateDelegate(paramType, this, eventMethod);
+
+
 
 								// 1、怎么根据listenerParameter新建一个事件类型，如UnityAction<bool>
 								// 2、怎么根据eventParameter，新建lambda表示式或者delegate之类的，并赋值给listenerMethod
@@ -138,10 +137,7 @@ namespace SMFrame
 								ParameterInfo[] eventParameter = eventMethod.GetParameters();
 								object[] eventParams = new object[eventParameter.Length];
 
-								DebugMethod(listenerMethod);
-
-
-								DebugMethod(eventMethod);
+								
 
 
 
@@ -164,7 +160,8 @@ namespace SMFrame
 
 		private void DebugMethod(MethodInfo method)
 		{
-#region 打印method
+			#region 打印method
+			Debug.Log(method.Name + "_______________________________________________________________________ begin");
 			ParameterInfo[] parameter = method.GetParameters(); // 他妈的这里写成item了，难怪拿不到UnityEngine.Events.UnityAction`1[System.Boolean]
 			// 打印参数类型
 			int parameterInfoCount = 0;
@@ -183,7 +180,8 @@ namespace SMFrame
 			// UnityEngine.Debug:Log(Object)
 			Debug.Log("\nName: " + method.Name + "\n ReflectedType:" + method.ReflectedType
 + "\n DeclaringType:" + method.DeclaringType + "\n GetType:" + method.GetType() + "\n MemberType:" + method.MemberType + "\n ToString:" + method.ToString());
-#endregion
+			Debug.Log(method.Name + "------------------------------------------------------------------------ end");
+			#endregion
 		}
 	}
 }
