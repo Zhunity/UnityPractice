@@ -33,11 +33,36 @@ public static class EventManager
 		Reciever currentReciever;
 		if (m_dispatcher.TryGetValue(eventID, out currentReciever))
 		{
-			currentReciever += reciever;
+			if(currentReciever == null)
+			{
+				currentReciever = reciever;
+			}
+			else
+			{
+				currentReciever += reciever;
+			}
 		}
 		else
 		{
 			m_dispatcher.Add(eventID, reciever);
+		}
+	}
+
+	public static void Unbind(EventID eventID, Reciever reciever)
+	{
+		if (reciever == null)
+		{
+			return;
+		}
+
+		Reciever currentReciever;
+		if (m_dispatcher.TryGetValue(eventID, out currentReciever))
+		{
+			if(currentReciever == null)
+			{
+				return;
+			}
+			currentReciever -= reciever;
 		}
 	}
 
