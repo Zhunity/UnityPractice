@@ -84,6 +84,7 @@ public class DictionaryGet : MonoBehaviour {
 			{
 				Debug.Log("dict.TryGetValue(2, out setNull) can not find");
 			}
+			// TODO ContainValues
 		}
 		catch (Exception e)
 		{
