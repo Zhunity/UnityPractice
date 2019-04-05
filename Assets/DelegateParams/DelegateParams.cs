@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class DelegateParams : MonoBehaviour
 {
+	/// <summary>
+	/// 只能用参数类型为params object[] objs的函数，不过先这样吧，以后再研究不用params object[] objs类型的
+	/// 不过感觉可能会有装箱拆箱消耗
+	/// </summary>
+	/// <param name="objs"></param>
 	delegate void delegateParams(params object[] objs);
 
 	void Start()
@@ -42,9 +47,14 @@ public class DelegateParams : MonoBehaviour
 		Debug.Log("Different Type Params " + num + "   " + str);
 	}
 
-	int test = 1;
 	private void ObjectParams(params object[] obj)
 	{
-		Debug.Log("Object Params " + test++);
+		Debug.Log("Object Params --------------------------------------------------");
+
+		int i = 0;
+		foreach (var item in obj)
+		{
+			Debug.Log(i++ + "  " + item);
+		}
 	}
 }
