@@ -37,7 +37,7 @@ public static class EventManager
 		}
 		else
 		{
-			m_dispatcher.Add(eventID, currentReciever);
+			m_dispatcher.Add(eventID, reciever);
 		}
 	}
 
@@ -54,6 +54,6 @@ public static class EventManager
 			return;
 		}
 
-		reciever();
+		reciever(values);
 	}
 }

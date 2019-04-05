@@ -14,7 +14,6 @@ public class TestSend : MonoBehaviour
 		while (true)
 		{
 			yield return new WaitForSeconds(1f);
-			Debug.Log("TestSendEvent");
 			EventManager.Send(EventID.HelloWorld);
 		}
 	}

@@ -12,6 +12,7 @@ public class TestRecieve : MonoBehaviour
 
 	private void Test(params object[] values)
 	{
+		Debug.Log("TestRecieve ----------------------------");
 		if (values == null || values.Length == 0)
 		{
 			Debug.Log("no values");
