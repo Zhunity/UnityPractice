@@ -81,4 +81,9 @@ public static class EventManager
 
 		reciever(values);
 	}
+
+	public static void Clear()
+	{
+		m_dispatcher.Clear();
+	}
 }
