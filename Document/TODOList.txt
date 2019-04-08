@@ -2,4 +2,5 @@
 2、static类和Singleton区别 ObjectManager这有什么意义？
 3、Enum与string互换
 4、Delegate.CreateDelegate
-5、Layout Element，Vertical Layout Group，Content Size Fitter等用法
+5、C# 闭包（可以和上面一起看）
+6、Layout Element，Vertical Layout Group，Content Size Fitter等用法
