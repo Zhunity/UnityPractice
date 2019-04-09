@@ -24,5 +24,8 @@ public class ProfilerUtils : MonoBehaviour {
 		GUILayout.TextField("GetMonoUsedSizeLong: " + Profiler.GetMonoUsedSizeLong() / 1024 / 1024);
 		GUILayout.TextField("GetRuntimeMemorySizeLong: " + Profiler.GetRuntimeMemorySizeLong(this));
 		GUILayout.TextField("GetMonoHeapSizeLong: " + Profiler.GetMonoHeapSizeLong() / 1024 / 1024);
+
+		// FPS
+		GUILayout.TextField("FPS: " + 1.0 / Time.smoothDeltaTime);
 	}
 }
