@@ -6,3 +6,4 @@
 5、C# 闭包（可以和上面一起看）
 6、Layout Element，Vertical Layout Group，Content Size Fitter等用法
 7、时间、不仅在编辑器上看drawcall
+8、Dictionary和List的查找效率
