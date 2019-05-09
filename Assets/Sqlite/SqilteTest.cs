@@ -14,7 +14,7 @@ public class SqilteTest : MonoBehaviour
 		Sqlite = new SqliteDatabase("test.db");
 
 		//添加数据
-		Sqlite.ExecuteNonQuery("insert into example (name) values('test name')");
+		Sqlite.ExecuteNonQuery("insert into example (id, name) values(1, 'test name')");
 		PrintData();
 
 	}
