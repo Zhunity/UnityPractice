@@ -1,0 +1,3 @@
+[submodule "测试外部依赖项"]
+	path = 测试外部依赖项
+	url = https://github.com/Hgithubcao/ITaW
