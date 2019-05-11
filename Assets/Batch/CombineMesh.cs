@@ -41,6 +41,13 @@ public class CombineMesh : Editor
 		if (filter == null)
 			filter =go.AddComponent<MeshFilter>();
 		filter.sharedMesh =new Mesh();
+
+		/*
+		 * 这段脚本的核心是CombineMeshes()方法
+		 * 该方法有三个参数，第一个参数是合并实例的数组，第二个参数是是否对子物体的网格进行合并，第三个参数是是否共享材质
+		 * 如果希望物体共享材质则第三个参数为true，否则为false。
+		 * 在我测试的过程中发现，如果选择了对子物体的网格进行合并，那么每个子物体都不能再使用单独的材质，默认会以第一个材质作为合并后物体的材质
+		 */
 		filter.sharedMesh.CombineMeshes(combines,false);
 		//设置渲染器
 		MeshRenderer render =go.transform.GetComponent<MeshRenderer>();
@@ -50,7 +57,7 @@ public class CombineMesh : Editor
 		render.sharedMaterials = mats;
 	}
 
-	[MenuItem("HotKey/SetActive %#d")]
+	[MenuItem("GameObject/SetActive %#d", false, 10)]
 	public static void SetActive()
 	{
 		GameObject[] goList = Selection.gameObjects;
