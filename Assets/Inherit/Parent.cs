@@ -21,3 +21,9 @@ public class ClassParent
 		Debug.Log("ClassParent Ctor");
 	}
 }
+
+public interface InterfaceParenct
+{
+	//修饰符“public”对该项无效
+	/*public*/ void HelloWorld();
+}

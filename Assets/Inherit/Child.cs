@@ -5,10 +5,15 @@ using UnityEngine;
 /// <summary>
 /// C# 不支持多重继承。但是，您可以使用接口来实现多重继承
 /// </summary>
-public class Child : ClassParent
+public class Child : ClassParent, InterfaceParenct
 {
-    // Start is called before the first frame update
-    void Start()
+	public void HelloWorld()
+	{
+		throw new System.NotImplementedException();
+	}
+
+	// Start is called before the first frame update
+	void Start()
     {
         
     }
