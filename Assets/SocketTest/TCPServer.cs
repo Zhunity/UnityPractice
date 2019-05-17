@@ -21,7 +21,7 @@ public class TCPServer : MonoBehaviour
 
 	private List<Socket> clientSocketList = new List<Socket>();
 
-	void Start()
+	void Awake()
 	{
 		InitSocket();
 
