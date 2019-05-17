@@ -4,7 +4,6 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using UnityEngine;
-using Utils;
 
 /// <summary>
 /// https://blog.csdn.net/sinat_34791632/article/details/79722440
@@ -56,7 +55,7 @@ public class TCPServer : MonoBehaviour
 			clientSocketList.Add(client);
 
 			Debug.Log("客户端：" + client.RemoteEndPoint + "连接到服务器！");
-			AllSendMs("From Server:" + client.RemoteEndPoint + "客户端已连接到服务器！");
+			AllSendMsg("From Server:" + client.RemoteEndPoint + "客户端已连接到服务器！");
 
 			receiveThread = new Thread(ReceiveMsg);
 			receiveThread.Start(client);
@@ -78,14 +77,14 @@ public class TCPServer : MonoBehaviour
 				{
 					string s = "客户端：" + client.RemoteEndPoint + "断开了连接！";
 					Debug.Log(s);
-					AllSendMs(s);
+					AllSendMsg(s);
 					clientSocketList.Remove(client);
 					break;
 				}
 
 				string str = Encoding.UTF8.GetString(data, 0, data.Length);
 
-				AllSendMs(str);
+				AllSendMsg(str);
 			}
 			catch (System.Exception ex)
 			{
@@ -95,7 +94,7 @@ public class TCPServer : MonoBehaviour
 	}
 
 
-	void AllSendMs(string ms)
+	void AllSendMsg(string ms)
 	{
 		for (int i = 0; i < clientSocketList.Count; i++)
 		{
@@ -103,13 +102,13 @@ public class TCPServer : MonoBehaviour
 		}
 	}
 
-	void AllSendMs(object obj)
+	void AllSendMsg(object obj)
 	{
-		for (int i = 0; i < clientSocketList.Count; i++)
-		{
-			data = obj.SerializeToByteArray();
-			clientSocketList[i].Send(data, data.Length, 0);
-		}
+		//for (int i = 0; i < clientSocketList.Count; i++)
+		//{
+		//	data = obj.SerializeToByteArray();
+		//	clientSocketList[i].Send(data, data.Length, 0);
+		//}
 	}
 
 	void OnDestroy()

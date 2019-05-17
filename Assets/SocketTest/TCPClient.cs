@@ -4,7 +4,6 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using UnityEngine;
-using Utils;
 
 /// <summary>
 /// https://blog.csdn.net/sinat_34791632/article/details/79722440 
@@ -61,18 +60,18 @@ public class TCPClient : MonoBehaviour
 		}
 	}
 
-	void SendMes(string ms)
+	void SendMesg(string ms)
 	{
 		byte[] data = new byte[1024];
 		data = Encoding.UTF8.GetBytes(ms);
 		clientSocket.Send(data);
 	}
 
-	void SendMes(object obj)
+	void SendMesg(object obj)
 	{
-		byte[] data = new byte[1024];
-		data = obj.SerializeToByteArray();
-		clientSocket.Send(data, data.Length, 0);
+		//byte[] data = new byte[1024];
+		//data = obj.SerializeToByteArray();
+		//clientSocket.Send(data, data.Length, 0);
 	}
 
 	void OnDestroy()
