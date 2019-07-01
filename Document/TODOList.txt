@@ -8,3 +8,4 @@
 7、时间、不仅在编辑器上看drawcall
 8、Dictionary和List的查找效率
 9、mdb, IL, automatically implemented properties, collection initializers, optional parameter lambda expressions, extension methods
+10、UNITYE_EDITOR 为什么打进包里还生效了？？
