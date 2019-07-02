@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Unity.Entities;
+using Unity.Rendering;
 
 [Serializable]
 public struct UnityChanSpawner : ISharedComponentData
