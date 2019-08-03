@@ -170,7 +170,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SerializedData:
-    prefab: {fileID: 8291993836503576931, guid: ca5613adb5427924aa30ecea79341883,
+    prefab: {fileID: 2167846011557749711, guid: ae2be7f95cc2b8c49afc3c527079dd03,
       type: 3}
     lastSpawnTime: 0
     count: 10
