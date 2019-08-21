@@ -10,3 +10,8 @@
 9、UNITYE_EDITOR 为什么打进包里还生效了？？
 10、特效缩放
 11、找一个记录开发进度的工具
+12、ECS
+{
+	a.了解IComponentData,ISharedComponentData等Component
+	b.了解ComponentSystem，JobComponentSystem等System
+}
