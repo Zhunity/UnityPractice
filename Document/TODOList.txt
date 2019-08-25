@@ -14,4 +14,6 @@
 {
 	a.了解IComponentData,ISharedComponentData等Component
 	b.了解ComponentSystem，JobComponentSystem等System
+	c.ECS + Job System + Burst Compiler + GPU Instancing 播动作
+	   https://zhuanlan.zhihu.com/p/76939383
 }
