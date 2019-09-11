@@ -1,6 +1,24 @@
 优先级暂时都不高
-1、Enum与string互换
-2、C# 异常
+1、需要学习的东西：
+{
+	a.Editor Window 自定义编辑器
+	b.网络(socket,http)
+	c.渲染(shader， lwrp)
+	d.资源管理（ab）
+	e.ai(AI Planner,状态机,行为树)
+	f.代码热更底层（c#,lua， 虚拟机，il，aot,jit）
+	g.android/ios/window/mac
+	h.性能优化
+	i.日志查看（bugly，还有客户端本地查看）
+	j.自动化测试
+}
+2、ECS
+{
+	a.了解IComponentData,ISharedComponentData等Component
+	b.了解ComponentSystem，JobComponentSystem等System
+	c.ECS + Job System + Burst Compiler + GPU Instancing 播动作
+	   https://zhuanlan.zhihu.com/p/76939383
+}
 3、Delegate.CreateDelegate
 4、C# 闭包（可以和上面一起看）
 5、Layout Element，Vertical Layout Group，Content Size Fitter等用法
@@ -10,10 +28,4 @@
 9、UNITYE_EDITOR 为什么打进包里还生效了？？
 10、特效缩放
 11、找一个记录开发进度的工具
-12、ECS
-{
-	a.了解IComponentData,ISharedComponentData等Component
-	b.了解ComponentSystem，JobComponentSystem等System
-	c.ECS + Job System + Burst Compiler + GPU Instancing 播动作
-	   https://zhuanlan.zhihu.com/p/76939383
-}
+12、C# 异常
