@@ -359,6 +359,18 @@ namespace Unity.GPUAnimation
 				// 选取当前所在帧的clip数据作为一段时间的采样
 				float t = (float)(i - 1) / (boneMatrices.GetLength(0) - 3);
 
+				// WrapMode :
+				// Determines how time is treated outside of the keyframed range of an AnimationClip or AnimationCurve.
+				// The WrapMode that the animation system uses for a specific animation is determined this way:
+				// You can set the WrapMode of an AnimationClip in the import settings of the clip. THis is the recommended way to control the WrapMode.
+				// When an AnimationState is created, it inherits its WrapMode from the AnimationClip it is created from, but you can also change it from code.
+				// If the WrapMode of an AnimationState is set to Default, the animation system will use the WrapMode from the Animtaion component.
+				// Clamp		: ????? 没有
+				// Once			: When thime reaches the end of the animation clip, the clip will automatically stop playing and time will be reset to beginning of the clip.
+				// Loop			: When time reaches the end of the animation clip, time will continue at the begging.
+				// PingPong		: When time reaches the end of the animation clip, time will ping pong back between beginning and end
+				// Defalut		: Reads the default repeat mode set higher up
+				// ClampForever	: Plays back the animation. When it reaches the end, it will keep playing the last fram and never stop playing.
 				var oldWrapMode = clip.wrapMode;
 				clip.wrapMode = WrapMode.Clamp;
 				clip.SampleAnimation(root, t * clip.length);
