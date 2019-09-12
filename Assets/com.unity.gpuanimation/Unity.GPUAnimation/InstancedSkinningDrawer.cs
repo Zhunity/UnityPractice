@@ -90,7 +90,29 @@ namespace Unity.GPUAnimation
             argsBuffer.SetData(indirectArgs);
 
 			// 实现在场景中绘制制定数量的角色
-            Graphics.DrawMeshInstancedIndirect(mesh, 0, material, new Bounds(Vector3.zero, 1000000 * Vector3.one), argsBuffer, 0, new MaterialPropertyBlock(), shadowCastingMode, receiveShadows);
+			DrawMeshInstancedIndirect(mesh, 0, material, new Bounds(Vector3.zero, 1000000 * Vector3.one), argsBuffer, 0, new MaterialPropertyBlock(), shadowCastingMode, receiveShadows);
         }
-    }
+
+		/// <summary>
+		/// Draw the same mesh multipe times using GPU instancing
+		/// similar to Graphics.DrawMeshInstanced, this function draws manay instances of the same meshm but unlike that method, the arguments for how manay instances to draw come from bufferWithArgs
+		/// Use this function in situations where you want to draw the same mesh for a particular amount of times using an instanced shader. Meshes
+		/// are not further culled by the view frustum or baked occluders, nor sorted for transparency or z efficiency.
+		/// Buffer with arguments bufferWithArgs, has five interger numbers at given argsOffset offset : index count per instance, instance count, start index location, base vertex location, start instance location
+		/// TODO Script Example
+		/// </summary>
+		/// <param name="mesh">The mesh to draw</param>
+		/// <param name="submeshIndex">Which subset of the mesh to draw. This applies only to meshes that are composed of serveral material.</param>
+		/// <param name="material">Material to use</param>
+		/// <param name="bounds">The bounding volume surrounding the instances you intend to draw</param>
+		/// <param name="bufferWithArgs">The GPU buffer containing the argumenets for how many instances of this mesh to draw</param>
+		/// <param name="argsOffset">The byte offset into buffer, where the draw arguments start</param>
+		/// <param name="properties">Additional material properties to apply, see MaterialPropertyBlock</param>
+		/// <param name="castShadows">Determines whether the mesh can cast shadows</param>
+		/// <param name="receiveShadows"><Determines whether the mesh can recieve shadows/param>
+		void DrawMeshInstancedIndirect(Mesh mesh, int submeshIndex, Material material, Bounds bounds, ComputeBuffer bufferWithArgs, int argsOffset, MaterialPropertyBlock properties, ShadowCastingMode castShadows, bool receiveShadows)
+		{
+			Graphics.DrawMeshInstancedIndirect(mesh, submeshIndex, material, bounds, bufferWithArgs, argsOffset, properties, castShadows, receiveShadows);
+		}
+	}
 }
