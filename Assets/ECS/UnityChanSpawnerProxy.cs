@@ -8,10 +8,10 @@ using Unity.Rendering;
 [Serializable]
 public struct UnityChanSpawner : ISharedComponentData
 {
-	public GameObject prefab;
-	public float lastSpawnTime;
-	public int count;
-	public int index;
+	//public GameObject prefab;
+	//public float lastSpawnTime;
+	//public int count;
+	//public int index;
 }
 
 public class UnityChanSpawnerProxy : SharedComponentDataProxy<UnityChanSpawner> { }

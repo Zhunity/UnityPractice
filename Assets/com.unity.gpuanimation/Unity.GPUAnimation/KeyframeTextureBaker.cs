@@ -80,7 +80,7 @@ namespace Unity.GPUAnimation
 
 			// @TODO: warning about more than one materials
 
-			// messing 是不整洁的   arbitrary 任意的
+			// messing 使不整洁的   arbitrary 任意的
 			// Before messing about with some arbitrary game object hierarchy.
 			// Instantiate the character, but make sure it's inactive so it doesn't trigger any unexpected systems. 
 			var wasActive = animationRoot.activeSelf;
@@ -256,21 +256,40 @@ namespace Unity.GPUAnimation
 		/// <returns></returns>
 		private static Mesh CreateMesh(SkinnedMeshRenderer originalRenderer, Mesh mesh = null)
 		{
+			// Mesh:
+			// A class that allows creating or modifying meshes from script.
+			// Meshes contain vertices and multiple triangle arrays.(后面一个例子，到时候可以去看看)
+			// The triangle arrays are simply indices into the vertex arrays; three indices for each triangle.
+			// For every vertex there can be a normal, two texture coordinates, color and tangent. There are optional though and can be removed at will.
+			// All vertex information is stored in separate arrays of the same size, sof if your mesh has 10 vertices, you world also have 10-size arrays for normals and other attributes.
+			// TODO 粘一个官方文档地址
 			Mesh newMesh = new Mesh();
 			Mesh originalMesh = mesh == null ? originalRenderer.sharedMesh : mesh;
-			var boneWeights = originalMesh.boneWeights;
+
+			// Mesh.boneWeights: each vertex can be affected by up to 4 different bones. The bone weights should be in descending order(most significant first) and add up  to 1.
+			// BoneWeight: 
+			// Skinning bine weights of a vertex in the mesh.
+			// Each vertex is skinned with up to fout bones. All weights should sum up to one. Weights and bone indices should be defined in the order of decreasing weight. 
+			// if a vertex is affected by less than four bones, the remaining weights should be zeroes.
+			// TODO 粘一个官方文档地址
+			var boneWeights = originalMesh.boneWeights;	
 
 			originalMesh.CopyMeshData(newMesh);
 
 			Vector3[] vertices = originalMesh.vertices;
 			Vector2[] boneIds = new Vector2[originalMesh.vertexCount];
-			Vector2[] boneInfluences = new Vector2[originalMesh.vertexCount];
+			Vector2[] boneInfluences = new Vector2[originalMesh.vertexCount];   // influence 影响
 
+			#region 没看懂
 			int[] boneRemapping = null;
 
 			// 如果mesh非空，找到Mesh在sharedMesh中对应的bindPoses，把boneIndex0和bineIndex1映射到给定的Mesh上
 			if (mesh != null)
 			{
+				// bindposes :
+				// The bind poses. The bind pose at each index refers to the bone with the same index.
+				// The bind pose is the inverse of the transformation matrix of the bone, when the bone is in the bind pose.
+				// TODO 粘一个官方文档地址 还有试试官方文档里面的代码，看看都是些什么效果
 				var originalBindPoseMatrices = originalRenderer.sharedMesh.bindposes;
 				var newBindPoseMatrices = mesh.bindposes;
 				
@@ -284,12 +303,13 @@ namespace Unity.GPUAnimation
 					boneRemapping = new int[originalBindPoseMatrices.Length];
 					for (int i = 0; i < boneRemapping.Length; i++)
 					{
+						// 新-》旧的定向？
 						boneRemapping[i] = Array.FindIndex(originalBindPoseMatrices, x => x == newBindPoseMatrices[i]);
 					}
 				}
 			}
 			
-			var bones = originalRenderer.bones;
+			var bones = originalRenderer.bones; // bones 见bindposes
 			for (int i = 0; i < originalMesh.vertexCount; i++)
 			{
 				int boneIndex0 = boneWeights[i].boneIndex0;
@@ -308,7 +328,7 @@ namespace Unity.GPUAnimation
 
 				boneInfluences[i] = new Vector2(boneWeights[i].weight0 / mostInfluentialBonesWeight, boneWeights[i].weight1 / mostInfluentialBonesWeight);
 			}
-
+			#endregion
 			newMesh.vertices = vertices;
 			newMesh.uv2 = boneIds;
 			newMesh.uv3 = boneInfluences;
@@ -316,6 +336,7 @@ namespace Unity.GPUAnimation
 			return newMesh;
 		}
 
+		#region 没看懂
 		/// <summary>
 		/// 
 		/// </summary>
@@ -328,7 +349,11 @@ namespace Unity.GPUAnimation
 		{
 			var bindPoses = renderer.sharedMesh.bindposes;
 			var bones = renderer.bones;
+			// 创建一个长为（帧率*动作时长）+3，宽为骨骼数量的4x4矩阵
+			// 个人猜测，用于记录每一帧的所有骨骼的位置
 			Matrix4x4[,] boneMatrices = new Matrix4x4[Mathf.CeilToInt(framerate * clip.length) + 3, bones.Length];
+			//Debug.Log("clip.name:" + clip.name + "  clip.length:" + clip.length +"  boneMatrices.Length:" + boneMatrices.Length + "  boneMatrices.GetLength(0):" + boneMatrices.GetLength(0));
+			// clip.name:Walk  clip.length:0.5333334  boneMatrices.Length:595  boneMatrices.GetLength(0):35
 			for (int i = 1; i < boneMatrices.GetLength(0) - 1; i++)
 			{
 				// 选取当前所在帧的clip数据作为一段时间的采样
@@ -351,6 +376,7 @@ namespace Unity.GPUAnimation
 
 			return boneMatrices;
 		}
+		#endregion
 
 		#region Util methods
 

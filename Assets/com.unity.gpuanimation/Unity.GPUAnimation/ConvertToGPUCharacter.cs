@@ -29,8 +29,11 @@ namespace Unity.GPUAnimation
 		/// <param name="framerate"></param>
 		public static void AddCharacterComponents(EntityManager manager, Entity entity, GameObject characterRig, AnimationClip[] clips, float framerate)
 		{
+			// SkinnedMeshRenderer : the skinned mesh filter
+			// SkinnedMeshRenderer.sharedMesh : the mesh used for skinning
 			var renderer = characterRig.GetComponentInChildren<SkinnedMeshRenderer>();
-			
+
+			//Debug.Log(renderer.gameObject + "   " + renderer.sharedMesh);    "minion_skeleton"
 			var lod = new LodData
 			{
 				Lod1Mesh = renderer.sharedMesh,
@@ -41,6 +44,7 @@ namespace Unity.GPUAnimation
 				Lod3Distance = 10000,
 			};
 
+			// validation ÉúÐ§
 			//@TODO: Perform validation that the shader supports GPU Skinning mode
 			var bakedData = KeyframeTextureBaker.BakeClips(characterRig, clips, framerate, lod);
 
