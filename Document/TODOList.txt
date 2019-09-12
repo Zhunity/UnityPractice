@@ -29,3 +29,10 @@
 10、特效缩放
 11、找一个记录开发进度的工具
 12、C# 异常
+13、Mesh
+{
+	KeyframeTextureBaker.CreateMesh() 257
+	a.bones，bindposes，BoneWeight
+	b.uv2为什么跟boneIds对应
+	c.uv3为什么跟boneInfluences
+}
