@@ -7,11 +7,11 @@ using UnityEngine;
 // ComponentSystems run on the main thread. Use these when you have to do work that cannot be called from a job.
 public class UnityChanSpawnSystem : ComponentSystem
 {
-	ComponentGroup _spawner;
+	EntityQuery _spawner;
 
 	protected override void OnCreateManager()
 	{
-		_spawner = GetComponentGroup(typeof(UnityChanSpawner), typeof(Position));
+		_spawner = GetEntityQuery(typeof(UnityChanSpawner), typeof(Translation));
 	}
 
 	protected override void OnUpdate()
@@ -37,7 +37,7 @@ public class UnityChanSpawnSystem : ComponentSystem
 				else
 				{
 					var entity = EntityManager.Instantiate(spawnerData.prefab);
-					var position = EntityManager.GetComponentData<Position>(spawner);
+					var position = EntityManager.GetComponentData<Translation>(spawner);
 					int index = spawnerData.index;
 					// 为什么y值一直在加？
 					position.Value += new Unity.Mathematics.float3(1.1f * index, -1, 0);

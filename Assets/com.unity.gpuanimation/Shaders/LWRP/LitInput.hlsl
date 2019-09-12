@@ -4,7 +4,7 @@
 #include "Packages/com.unity.render-pipelines.lightweight/ShaderLibrary/Core.hlsl"
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/CommonMaterial.hlsl"
 #include "Packages/com.unity.render-pipelines.lightweight/ShaderLibrary/SurfaceInput.hlsl"
-#include "Assets/SMFrame/Plugins/com.unity.gpuanimation/Shaders/GPUAnimationLWRP.hlsl"
+#include "Assets/com.unity.gpuanimation/Shaders/GPUAnimationLWRP.hlsl"
 
 CBUFFER_START(UnityPerMaterial)
 float4 _BaseMap_ST;

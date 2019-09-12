@@ -1,19 +1,14 @@
 /Library
-
 *.sln
-
 *.csproj
-
 /Temp
 /.vs
-/Assets/RPG Character Animation Pack FREE
-/Assets/RPG Character Animation Pack FREE.meta
 /obj
+/Bundle
+/Dll
+/Publish
+/Assets/StreamingAssets
+/Patch
 /Assets/Temp
-/Assets/unity-chan!
-/Assets/ECS/character
-/Assets/ECS/common
-/Assets/ECS/s001
-/Assets/ECS/ynz
-/Assets/ECS/character.meta
-/Assets/ECS/common.meta
+/Assets/Temp.meta
+/.vscode
