@@ -93,7 +93,7 @@ Shader "Skinning Standard"
 			#pragma instancing_options procedural:setup
 
             #include "UnityStandardCore.cginc"
-            #include "Packages/com.unity.gpuanimation/Shaders/GPUAnimation.hlsl"
+            #include "Assets/com.unity.gpuanimation/Shaders/GPUAnimation.hlsl"
 
 			void setup()
 			{
