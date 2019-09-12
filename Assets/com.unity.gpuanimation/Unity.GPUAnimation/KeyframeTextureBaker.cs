@@ -63,8 +63,17 @@ namespace Unity.GPUAnimation
 			public int PixelEnd;
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="animationRoot">动画根对象</param>
+		/// <param name="animationClips">动画片段数组</param>
+		/// <param name="framerate">帧率</param>
+		/// <param name="lods">LOD数据</param>
+		/// <returns></returns>
 		public static BakedData BakeClips(GameObject animationRoot, AnimationClip[] animationClips, float framerate, LodData lods)
 		{
+			//首先获取动画根对象子对象的SkinMeshRenderer
 			var skinRenderers = animationRoot.GetComponentsInChildren<SkinnedMeshRenderer>();
 			if (skinRenderers.Length != 1)
 				throw new System.ArgumentException("There must be exactly one SkinnedMeshRenderer");
@@ -83,13 +92,14 @@ namespace Unity.GPUAnimation
 			var skinRenderer = instance.GetComponentInChildren<SkinnedMeshRenderer>();
 
 			BakedData bakedData = new BakedData();
-			bakedData.NewMesh = CreateMesh(skinRenderer);
-			var lod1Mesh = CreateMesh(skinRenderer, lods.Lod1Mesh);
+			bakedData.NewMesh = CreateMesh(skinRenderer);               // 利用这个skinRenderer作为CreateMesh方法的参数，生成BakedData的NewMesh
+			// BakedData的LodData结构体中的mesh成员也使用CreateMesh生成，只不过需要的第二个参数是输入lod的mesh成员
+			var lod1Mesh = CreateMesh(skinRenderer, lods.Lod1Mesh);	
 			var lod2Mesh = CreateMesh(skinRenderer, lods.Lod2Mesh);
 			var lod3Mesh = CreateMesh(skinRenderer, lods.Lod3Mesh);
 			bakedData.lods = new LodData(lod1Mesh, lod2Mesh, lod3Mesh, lods.Lod1Distance, lods.Lod2Distance, lods.Lod3Distance);
 
-			bakedData.Framerate = framerate;
+			bakedData.Framerate = framerate;    // BakedData的Framerate直接使用输入的framerate
 
 			var sampledBoneMatrices = new List<Matrix4x4[,]>();
 
@@ -97,14 +107,17 @@ namespace Unity.GPUAnimation
 
 			for (int i = 0; i < animationClips.Length; i++)
 			{
+				// 使用SampleAnimationClip方法对每个动画片段采样得到sapledMatrix，然后添加到list中
 				var sampledMatrix = SampleAnimationClip(instance, animationClips[i], skinRenderer, bakedData.Framerate);
 				sampledBoneMatrices.Add(sampledMatrix);
 
+				// 使用sampledBoneMatrices的维数参数作为关键帧和骨骼的数目统计
 				numberOfKeyFrames += sampledMatrix.GetLength(0);
 			}
 
 			int numberOfBones = sampledBoneMatrices[0].GetLength(1);
 
+			// 使用骨骼数和关键帧数作为大小创建材质
 			var tex0 = bakedData.AnimationTextures.Animation0 = new Texture2D(numberOfKeyFrames, numberOfBones, TextureFormat.RGBAFloat, false);
 			tex0.wrapMode = TextureWrapMode.Clamp;
 			tex0.filterMode = FilterMode.Point;
@@ -153,6 +166,7 @@ namespace Unity.GPUAnimation
 
 						int index = Get1DCoord(runningTotalNumberOfKeyframes + keyframeIndex, boneIndex, tex0.width);
 
+						// 将sampledBoneMatrices的数据全部存入到材质颜色中
 						texture0Color[index] = sampledBoneMatrices[i][keyframeIndex, boneIndex].GetRow(0);
 						texture1Color[index] = sampledBoneMatrices[i][keyframeIndex, boneIndex].GetRow(1);
 						texture2Color[index] = sampledBoneMatrices[i][keyframeIndex, boneIndex].GetRow(2);
@@ -162,6 +176,7 @@ namespace Unity.GPUAnimation
 				AnimationClipData clipData = new AnimationClipData
 				{
 					Clip = animationClips[i],
+					// 生成AnimationClipData需要的开始结束位置
 					PixelStart = runningTotalNumberOfKeyframes + 1,
 					PixelEnd = runningTotalNumberOfKeyframes + sampledBoneMatrices[i].GetLength(0) - 1
 				};
@@ -211,6 +226,7 @@ namespace Unity.GPUAnimation
 			tex1.Apply(false, true);
 			tex2.Apply(false, true);
 			
+			// 创建Dictionary字段
 			bakedData.AnimationsDictionary = new Dictionary<string, AnimationClipData>();
 			foreach (var clipData in bakedData.Animations)
 			{
@@ -252,6 +268,7 @@ namespace Unity.GPUAnimation
 
 			int[] boneRemapping = null;
 
+			// 如果mesh非空，找到Mesh在sharedMesh中对应的bindPoses，把boneIndex0和bineIndex1映射到给定的Mesh上
 			if (mesh != null)
 			{
 				var originalBindPoseMatrices = originalRenderer.sharedMesh.bindposes;
@@ -284,6 +301,7 @@ namespace Unity.GPUAnimation
 					boneIndex1 = boneRemapping[boneIndex1];
 				}
 
+				// 通过boneWights的boneIndex0和boneIndex1生成的boneInfluences,作为newMesh的UV2和UV3存储起来
 				boneIds[i] = new Vector2((boneIndex0 + 0.5f) / bones.Length, (boneIndex1 + 0.5f) / bones.Length);
 
 				float mostInfluentialBonesWeight = boneWeights[i].weight0 + boneWeights[i].weight1;
@@ -305,7 +323,7 @@ namespace Unity.GPUAnimation
 		/// <param name="clip">单个动画片段</param>
 		/// <param name="renderer">SkinnedMeshRenderer</param>
 		/// <param name="framerate">帧率</param>
-		/// <returns>动画片段采样后shengchengMatrices</returns>
+		/// <returns>动画片段采样后生成的Matrices</returns>
 		private static Matrix4x4[,] SampleAnimationClip(GameObject root, AnimationClip clip, SkinnedMeshRenderer renderer, float framerate)
 		{
 			var bindPoses = renderer.sharedMesh.bindposes;
@@ -313,6 +331,7 @@ namespace Unity.GPUAnimation
 			Matrix4x4[,] boneMatrices = new Matrix4x4[Mathf.CeilToInt(framerate * clip.length) + 3, bones.Length];
 			for (int i = 1; i < boneMatrices.GetLength(0) - 1; i++)
 			{
+				// 选取当前所在帧的clip数据作为一段时间的采样
 				float t = (float)(i - 1) / (boneMatrices.GetLength(0) - 3);
 
 				var oldWrapMode = clip.wrapMode;

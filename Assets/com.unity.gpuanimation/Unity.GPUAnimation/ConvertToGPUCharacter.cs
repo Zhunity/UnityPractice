@@ -19,6 +19,14 @@ namespace Unity.GPUAnimation
 			}
 		}
 
+		/// <summary>
+		/// 把角色转换成可以使用GPU渲染的关键
+		/// </summary>
+		/// <param name="manager"></param>
+		/// <param name="entity"></param>
+		/// <param name="characterRig"></param>
+		/// <param name="clips"></param>
+		/// <param name="framerate"></param>
 		public static void AddCharacterComponents(EntityManager manager, Entity entity, GameObject characterRig, AnimationClip[] clips, float framerate)
 		{
 			var renderer = characterRig.GetComponentInChildren<SkinnedMeshRenderer>();
@@ -36,6 +44,7 @@ namespace Unity.GPUAnimation
 			//@TODO: Perform validation that the shader supports GPU Skinning mode
 			var bakedData = KeyframeTextureBaker.BakeClips(characterRig, clips, framerate, lod);
 
+			// 利用manager在entity中依次添加animation state, texturecoordinate, rendercharacter
 			var animState = default(GPUAnimationState);
 			animState.AnimationClipSet = CreateClipSet(bakedData);
 			manager.AddComponentData(entity, animState);

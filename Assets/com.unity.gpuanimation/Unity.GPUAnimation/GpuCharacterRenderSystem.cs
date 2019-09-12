@@ -13,6 +13,9 @@ using UnityEngine.Rendering;
 
 namespace Unity.GPUAnimation
 {
+	/// <summary>
+	/// 存储动画片段的持续时间和编号
+	/// </summary>
 	public struct GPUAnimationState : IComponentData
 	{
 		public float Time;
@@ -86,6 +89,9 @@ namespace Unity.GPUAnimation
 
 	}
 
+	/// <summary>
+	/// 准备好Material，Animation Texture、Mesh之后就可以准备绘制
+	/// </summary>
 	[System.Serializable]
 	struct RenderCharacter : ISharedComponentData, IEquatable<RenderCharacter>
 	{
@@ -174,6 +180,7 @@ namespace Unity.GPUAnimation
 	[UpdateAfter(typeof(CalculateTextureCoordinateSystem))]
 	public class GpuCharacterRenderSystem : JobComponentSystem
     {
+		// 创建绘制的角色列表
 	    private List<RenderCharacter> _Characters = new List<RenderCharacter>();
 	    private Dictionary<RenderCharacter, InstancedSkinningDrawer> _Drawers = new Dictionary<RenderCharacter, InstancedSkinningDrawer>();
 
@@ -194,6 +201,7 @@ namespace Unity.GPUAnimation
 		        InstancedSkinningDrawer drawer;
 		        if (!_Drawers.TryGetValue(character, out drawer))
 		        {
+					// 对要绘制的角色实例化一个Drawer
 			        drawer = new InstancedSkinningDrawer(character.Material, character.Mesh, character.AnimationTexture);
 			        _Drawers.Add(character, drawer);
 		        }
@@ -202,11 +210,13 @@ namespace Unity.GPUAnimation
 
 				Profiler.BeginSample("ExtractState");
 				JobHandle jobA, jobB;
+				// 传输坐标和LocalToWorld矩阵
 		        var coords = m_Characters.ToComponentDataArray<AnimationTextureCoordinate>(Allocator.TempJob, out jobA);
 		        var localToWorld = m_Characters.ToComponentDataArray<LocalToWorld>(Allocator.TempJob, out jobB);
 		        JobHandle.CompleteAll(ref jobA, ref jobB);
 		        Profiler.EndSample();
 		        
+				// 调用Draw()方法
 		        drawer.Draw(coords.Reinterpret_Temp<AnimationTextureCoordinate, float3>(), localToWorld.Reinterpret_Temp<LocalToWorld, float4x4>(), character.CastShadows, character.ReceiveShadows);
 		        
 		        coords.Dispose();

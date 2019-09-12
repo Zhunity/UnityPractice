@@ -27,6 +27,7 @@ namespace Unity.GPUAnimation
             this.mesh = meshToDraw;
             this.material = new Material(srcMaterial);
 
+			// 需要的ComputeBuffer只有76字节，这也是CPU占用低的主要原因，传递的数据是顶点的转移矩阵和它所在的材质中的坐标
             argsBuffer = new ComputeBuffer(1, indirectArgs.Length * sizeof(uint), ComputeBufferType.IndirectArguments);
             indirectArgs[0] = mesh.GetIndexCount(0);
             indirectArgs[1] = (uint)0;
@@ -88,6 +89,7 @@ namespace Unity.GPUAnimation
             indirectArgs[1] = (uint)count;
             argsBuffer.SetData(indirectArgs);
 
+			// 实现在场景中绘制制定数量的角色
             Graphics.DrawMeshInstancedIndirect(mesh, 0, material, new Bounds(Vector3.zero, 1000000 * Vector3.one), argsBuffer, 0, new MaterialPropertyBlock(), shadowCastingMode, receiveShadows);
         }
     }
