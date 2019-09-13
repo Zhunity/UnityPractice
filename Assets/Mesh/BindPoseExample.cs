@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 /// <summary>
 /// this example creates a quad mesh from scratch, creates bones
@@ -19,17 +20,21 @@ using System.Collections;
 /// The bind pose is the inverse of the transformation matrix of the bone, when the bone is in the bind pose.
 /// 还不是很懂，绑定的姿势（？）。各个序号的绑定姿势涉及到相同编号的骨骼（？）
 /// 绑定姿势跟在在绑定姿势的骨骼的矩阵信息相反（？）
-/// 
-/// https://gameinstitute.qq.com/course/detail/10116
-/// 绑定姿势：骨骼的初始姿势，也被称为T-POSE
+/// bindPoses数量和骨骼数量一致吗？
 /// --------------------------------------------------------------------------------------------------------------------------------
 /// 疑问点：
 /// 1、骨骼是怎么定义的，定义transform就可以了吗？
 /// 按照视频内容，关节和骨骼都是同一个东西。
 /// 
 /// 2、boneIndex怎么和真正的骨骼映射在一起？
-/// 3、binePos是什么？
-/// 4、binePos和BoneWeight的关系是什么？
+/// 应该是mesh.bindposes数组（或者_renderer.bones数组）的顺序
+/// 
+/// 3、bonePoses是什么？
+/// https://gameinstitute.qq.com/course/detail/10116
+/// 绑定姿势：骨骼的初始姿势，也被称为T-POSE
+/// 
+/// 4、bonePoses和BoneWeight的关系是什么？
+/// 目测通过顶点通过boneweight的index，读取到bonePoses的骨骼，然后通过权重，设置每个顶点的位置
 /// </summary>
 public class BindPoseExample : MonoBehaviour
 {
@@ -41,6 +46,15 @@ public class BindPoseExample : MonoBehaviour
 	public Vector2[] uv;
 	public Material material;
 	public BoneWeight[] weights;
+
+	[Serializable]
+	public struct Bone
+	{
+		public string name;
+		public Vector3 localPosition;
+	}
+
+	public Bone[] BoneList;
 
 	private void Start()
 	{
@@ -86,12 +100,15 @@ public class BindPoseExample : MonoBehaviour
 	private Matrix4x4[] GetBindPos()
 	{
 		Transform[] bones = GetBones();
-		Matrix4x4[] bindPoses = new Matrix4x4[2];
+		int length = bones.Length;
+		Matrix4x4[] bindPoses = new Matrix4x4[length];
 		// The bind pose is bone's inverse transformation matrix
 		// In this case the matrix we also make this matrix relative to the root
 		// So that we can move the root game object around freely
-		bindPoses[0] = bones[0].worldToLocalMatrix * transform.localToWorldMatrix;
-		bindPoses[1] = bones[1].worldToLocalMatrix * transform.localToWorldMatrix;
+		for(int i = 0; i < length; i ++)
+		{
+			bindPoses[i] = bones[i].worldToLocalMatrix * transform.localToWorldMatrix;
+		}
 		return bindPoses;
 	}
 
@@ -100,9 +117,12 @@ public class BindPoseExample : MonoBehaviour
 	{
 		if(bones == null)
 		{
-			bones = new Transform[2];
-			bones[0] = NewBone("Lower", Vector3.zero);
-			bones[1] = NewBone("Upper", new Vector3(0, 5, 0));
+			int length = BoneList.Length;
+			bones = new Transform[length];
+			for (int i = 0; i < length; i ++ )
+			{
+				bones[i] = NewBone(BoneList[i].name, BoneList[i].localPosition);
+			}
 		}
 		return bones;
 	}
@@ -117,11 +137,18 @@ public class BindPoseExample : MonoBehaviour
 		return bone;
 	}
 
+	[Serializable]
+	public struct KeyFrameSample
+	{
+		public Vector4[] keyFrame; // 0 : time	1 : value	2 : intTangent	3 : outTangent
+
+	}
+
 	private void PlayAnimation()
 	{
 		// Assign a simple waving animation to the bottom bone
 		AnimationCurve curve = new AnimationCurve();
-		curve.keys = new Keyframe[] { new Keyframe(0, 0, 0, 0), new Keyframe(1, 3, 0, 0), new Keyframe(2, 0.0F, 0, 0) };
+		curve.keys = new Keyframe[] { new Keyframe(0, 0, 0, 0), new Keyframe(1, 5, 0, 0), new Keyframe(2, 0.0F, 0, 0) };
 
 		// Create the clip with the curve
 		AnimationClip clip = new AnimationClip();
@@ -133,7 +160,6 @@ public class BindPoseExample : MonoBehaviour
 		_animaton.AddClip(clip, "test");
 		_animaton.Play("test");
 	}
-
 
 	void _Start()
 	{

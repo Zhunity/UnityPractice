@@ -277,6 +277,11 @@ MonoBehaviour:
     m_BoneIndex1: 0
     m_BoneIndex2: 0
     m_BoneIndex3: 0
+  BoneList:
+  - name: Lower
+    localPosition: {x: 0, y: 0, z: 0}
+  - name: Upper
+    localPosition: {x: 0, y: 5, z: 0}
 --- !u!4 &884248972
 Transform:
   m_ObjectHideFlags: 0
