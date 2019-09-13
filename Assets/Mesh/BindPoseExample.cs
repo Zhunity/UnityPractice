@@ -1,9 +1,29 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-// this example creates a quad mesh from scratch, creates bones
-// and assigns them, and animates the bones motion to make the
-// quad animate based on a simple animation curve.
+/// <summary>
+/// this example creates a quad mesh from scratch, creates bones
+/// and assigns them, and animates the bones motion to make the
+/// quad animate based on a simple animation curve.
+/// Mesh.bindposes 和 Mesh.boneWeights 用的同一个例子的代码
+/// 
+/// 整理现有情报：
+/// Mesh.boneWeights ：
+/// The size of the array is either vertexCount or zero. 
+/// each vertex can be affected by up to 4 different bones. 
+/// The bone weights should be in descending order(most significant first) and add up  to 1.
+/// 长度和顶点数一致。 每个顶点最多可以被4条不同骨骼影响，影响的权重以降序排序，所有权重加起来等于1
+/// Mesh.bindposes ： 
+/// The bind poses. The bind pose at each index refers to the bone with the same index.
+/// The bind pose is the inverse of the transformation matrix of the bone, when the bone is in the bind pose.
+/// 还不是很懂，绑定的姿势（？）。各个序号的绑定姿势涉及到相同编号的骨骼（？）
+/// 绑定姿势跟在在绑定姿势的骨骼的矩阵信息相反（？）
+/// 疑问点：
+/// 1、骨骼是怎么定义的，定义transform就可以了吗？
+/// 2、boneIndex怎么和真正的骨骼映射在一起？
+/// 3、binePos是什么？
+/// 4、binePos和BoneWeight的关系是什么？
+/// </summary>
 public class BindPoseExample : MonoBehaviour
 {
 	private SkinnedMeshRenderer _renderer;
@@ -58,9 +78,6 @@ public class BindPoseExample : MonoBehaviour
 	{
 		Transform[] bones = GetBones();
 		Matrix4x4[] bindPoses = new Matrix4x4[2];
-
-		
-
 		// The bind pose is bone's inverse transformation matrix
 		// In this case the matrix we also make this matrix relative to the root
 		// So that we can move the root game object around freely
