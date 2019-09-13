@@ -6,13 +6,96 @@ using System.Collections;
 // quad animate based on a simple animation curve.
 public class BindPoseExample : MonoBehaviour
 {
-	void Start()
-	{
-		gameObject.AddComponent<Animation>();
-		gameObject.AddComponent<SkinnedMeshRenderer>();
-		SkinnedMeshRenderer rend = GetComponent<SkinnedMeshRenderer>();
-		Animation anim = GetComponent<Animation>();
+	private SkinnedMeshRenderer _renderer;
+	private Animation _animaton;
 
+	public Vector3[] vertices;
+	public int[] triangles;
+	public Vector2[] uv;
+	public Material material;
+	public BoneWeight[] weights;
+
+	private void Start()
+	{
+		InitComponent();
+		InitRenderer();
+		//_Start();
+	}
+
+	private void InitComponent()
+	{
+		_renderer = gameObject.AddComponent<SkinnedMeshRenderer>();
+		_animaton = gameObject.AddComponent<Animation>();
+	}
+
+	private void InitRenderer()
+	{
+		_renderer.sharedMesh = GetMesh();
+		_renderer.material = material;
+		_renderer.bones = GetBones();
+	}
+
+	private Mesh GetMesh()
+	{
+		// Build basic mesh
+		Mesh mesh = new Mesh();
+		mesh.vertices = vertices;
+		mesh.triangles = triangles;
+		mesh.uv = uv;
+		mesh.RecalculateNormals();
+		// assign bone weights to mesh
+		mesh.boneWeights = weights;
+		mesh.bindposes = GetBindPos();
+		return mesh;
+	}
+
+	/// <summary>
+	/// Create Bone Transforms and Bind poses
+	/// One bone at the bottom and one at the top
+	/// </summary>
+	/// <returns></returns>
+	private Matrix4x4[] GetBindPos()
+	{
+		Transform[] bones = GetBones();
+		Matrix4x4[] bindPoses = new Matrix4x4[2];
+
+		
+
+		// The bind pose is bone's inverse transformation matrix
+		// In this case the matrix we also make this matrix relative to the root
+		// So that we can move the root game object around freely
+		bindPoses[0] = bones[0].worldToLocalMatrix * transform.localToWorldMatrix;
+		bindPoses[1] = bones[1].worldToLocalMatrix * transform.localToWorldMatrix;
+		return bindPoses;
+	}
+
+	private Transform[] bones;
+	private Transform[] GetBones()
+	{
+		if(bones == null)
+		{
+			bones = new Transform[2];
+			bones[0] = NewBone("Low", Vector3.zero);
+			bones[1] = NewBone("Upper", new Vector3(0, 5, 0));
+		}
+		return bones;
+	}
+
+	private Transform NewBone(string name, Vector3 localPosition)
+	{
+		Transform bone = new GameObject(name).transform;
+		bone.parent = transform;
+		// Set the position relative to the parent
+		bone.localRotation = Quaternion.identity;
+		bone.localPosition = localPosition;
+		return bone;
+	}
+
+
+	void _Start()
+	{
+		var rend = gameObject.AddComponent<SkinnedMeshRenderer>();
+		var anim = gameObject.AddComponent<Animation>();
 		// Build basic mesh
 		Mesh mesh = new Mesh();
 		mesh.vertices = new Vector3[] { new Vector3(-1, 0, 0), new Vector3(1, 0, 0), new Vector3(-1, 5, 0), new Vector3(1, 5, 0) };
@@ -66,17 +149,17 @@ public class BindPoseExample : MonoBehaviour
 		rend.sharedMesh = mesh;
 
 		// Assign a simple waving animation to the bottom bone
-		//AnimationCurve curve = new AnimationCurve();
-		//curve.keys = new Keyframe[] { new Keyframe(0, 0, 0, 0), new Keyframe(1, 3, 0, 0), new Keyframe(2, 0.0F, 0, 0) };
+		AnimationCurve curve = new AnimationCurve();
+		curve.keys = new Keyframe[] { new Keyframe(0, 0, 0, 0), new Keyframe(1, 3, 0, 0), new Keyframe(2, 0.0F, 0, 0) };
 
-		//// Create the clip with the curve
-		////AnimationClip clip = new AnimationClip();
-		//clip.SetCurve("Lower", typeof(Transform), "m_LocalPosition.z", curve);
-		//clip.legacy = true;
+		// Create the clip with the curve
+		AnimationClip clip = new AnimationClip();
+		clip.SetCurve("Lower", typeof(Transform), "m_LocalPosition.z", curve);
+		clip.legacy = true;
 
-		//// Add and play the clip
-		//clip.wrapMode = WrapMode.Loop;
-		//anim.AddClip(clip, "test"); 
-		//anim.Play("test");
+		// Add and play the clip
+		clip.wrapMode = WrapMode.Loop;
+		anim.AddClip(clip, "test");
+		anim.Play("test");
 	}
 }
