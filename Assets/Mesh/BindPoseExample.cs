@@ -13,13 +13,20 @@ using System.Collections;
 /// each vertex can be affected by up to 4 different bones. 
 /// The bone weights should be in descending order(most significant first) and add up  to 1.
 /// 长度和顶点数一致。 每个顶点最多可以被4条不同骨骼影响，影响的权重以降序排序，所有权重加起来等于1
+/// 
 /// Mesh.bindposes ： 
 /// The bind poses. The bind pose at each index refers to the bone with the same index.
 /// The bind pose is the inverse of the transformation matrix of the bone, when the bone is in the bind pose.
 /// 还不是很懂，绑定的姿势（？）。各个序号的绑定姿势涉及到相同编号的骨骼（？）
 /// 绑定姿势跟在在绑定姿势的骨骼的矩阵信息相反（？）
+/// 
+/// https://gameinstitute.qq.com/course/detail/10116
+/// 绑定姿势：骨骼的初始姿势，也被称为T-POSE
+/// --------------------------------------------------------------------------------------------------------------------------------
 /// 疑问点：
 /// 1、骨骼是怎么定义的，定义transform就可以了吗？
+/// 按照视频内容，关节和骨骼都是同一个东西。
+/// 
 /// 2、boneIndex怎么和真正的骨骼映射在一起？
 /// 3、binePos是什么？
 /// 4、binePos和BoneWeight的关系是什么？
@@ -39,6 +46,7 @@ public class BindPoseExample : MonoBehaviour
 	{
 		InitComponent();
 		InitRenderer();
+		PlayAnimation();
 		//_Start();
 	}
 
@@ -50,6 +58,7 @@ public class BindPoseExample : MonoBehaviour
 
 	private void InitRenderer()
 	{
+		// Assign bones and bind poses
 		_renderer.sharedMesh = GetMesh();
 		_renderer.material = material;
 		_renderer.bones = GetBones();
@@ -92,7 +101,7 @@ public class BindPoseExample : MonoBehaviour
 		if(bones == null)
 		{
 			bones = new Transform[2];
-			bones[0] = NewBone("Low", Vector3.zero);
+			bones[0] = NewBone("Lower", Vector3.zero);
 			bones[1] = NewBone("Upper", new Vector3(0, 5, 0));
 		}
 		return bones;
@@ -106,6 +115,23 @@ public class BindPoseExample : MonoBehaviour
 		bone.localRotation = Quaternion.identity;
 		bone.localPosition = localPosition;
 		return bone;
+	}
+
+	private void PlayAnimation()
+	{
+		// Assign a simple waving animation to the bottom bone
+		AnimationCurve curve = new AnimationCurve();
+		curve.keys = new Keyframe[] { new Keyframe(0, 0, 0, 0), new Keyframe(1, 3, 0, 0), new Keyframe(2, 0.0F, 0, 0) };
+
+		// Create the clip with the curve
+		AnimationClip clip = new AnimationClip();
+		clip.SetCurve("Lower", typeof(Transform), "m_LocalPosition.z", curve);
+		clip.legacy = true;
+
+		// Add and play the clip
+		clip.wrapMode = WrapMode.Loop;
+		_animaton.AddClip(clip, "test");
+		_animaton.Play("test");
 	}
 
 
