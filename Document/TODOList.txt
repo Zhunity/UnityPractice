@@ -14,10 +14,11 @@
 }
 2、ECS
 {
+	TODO  找个时间看看底层代码
 	a.了解IComponentData,ISharedComponentData等Component
 	b.了解ComponentSystem，JobComponentSystem等System
-	c.ECS + Job System + Burst Compiler + GPU Instancing 播动作
-	   https://zhuanlan.zhihu.com/p/76939383
+	c.ECS + Job System + Burst Compiler + GPU Instancing
+	d.SharedComponentDataProxy和IConvertGameObjectToEntity关系
 }
 3、Delegate.CreateDelegate
 4、C# 闭包（可以和上面一起看）
@@ -31,8 +32,16 @@
 12、C# 异常
 13、Mesh
 {
-	KeyframeTextureBaker.CreateMesh() 257
-	a.bones，bindposes，BoneWeight
-	b.uv2为什么跟boneIds对应
-	c.uv3为什么跟boneInfluences
+	https://zhuanlan.zhihu.com/p/76939383
+	a.KeyframeTextureBaker.CreateMesh() 257
+	{
+		I.bones，bindposes，BoneWeight
+		II.uv2为什么跟boneIds对应
+		III.uv3为什么跟boneInfluences
+	}
+	b.改法：
+	{
+		I.Animation和模型显示分开
+		II.不同LOD先不区分
+	}
 }

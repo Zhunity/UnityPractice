@@ -266,19 +266,11 @@ namespace Unity.GPUAnimation
 			Mesh newMesh = new Mesh();
 			Mesh originalMesh = mesh == null ? originalRenderer.sharedMesh : mesh;
 
-			// Mesh.boneWeights: each vertex can be affected by up to 4 different bones. The bone weights should be in descending order(most significant first) and add up  to 1.
-			// BoneWeight: 
-			// Skinning bine weights of a vertex in the mesh.
-			// Each vertex is skinned with up to fout bones. All weights should sum up to one. Weights and bone indices should be defined in the order of decreasing weight. 
-			// if a vertex is affected by less than four bones, the remaining weights should be zeroes.
-			// TODO 粘一个官方文档地址
-			var boneWeights = originalMesh.boneWeights;	
-
 			originalMesh.CopyMeshData(newMesh);
 
 			Vector3[] vertices = originalMesh.vertices;
-			Vector2[] boneIds = new Vector2[originalMesh.vertexCount];
-			Vector2[] boneInfluences = new Vector2[originalMesh.vertexCount];   // influence 影响
+			Vector2[] boneIds = new Vector2[originalMesh.vertexCount];			// 骨骼id，骨骼数量=顶点数量？ 猜测是boneweight里面的index？
+			Vector2[] boneInfluences = new Vector2[originalMesh.vertexCount];   // influence 影响				猜测是boneWeight里的weight？
 
 			#region 没看懂
 			int[] boneRemapping = null;
@@ -304,14 +296,24 @@ namespace Unity.GPUAnimation
 					for (int i = 0; i < boneRemapping.Length; i++)
 					{
 						// 新-》旧的定向？
+						// newBindPoseMatrices是LodData里面的mesh
 						boneRemapping[i] = Array.FindIndex(originalBindPoseMatrices, x => x == newBindPoseMatrices[i]);
 					}
 				}
 			}
-			
+
+
+			// Mesh.boneWeights: each vertex can be affected by up to 4 different bones. The bone weights should be in descending order(most significant first) and add up  to 1.
+			// BoneWeight: 
+			// Skinning bine weights of a vertex in the mesh.
+			// Each vertex is skinned with up to fout bones. All weights should sum up to one. Weights and bone indices should be defined in the order of decreasing weight. 
+			// if a vertex is affected by less than four bones, the remaining weights should be zeroes.
+			// TODO 粘一个官方文档地址
+			var boneWeights = originalMesh.boneWeights;
 			var bones = originalRenderer.bones; // bones 见bindposes
 			for (int i = 0; i < originalMesh.vertexCount; i++)
 			{
+				// 只受两根骨骼影响吗?
 				int boneIndex0 = boneWeights[i].boneIndex0;
 				int boneIndex1 = boneWeights[i].boneIndex1;
 
