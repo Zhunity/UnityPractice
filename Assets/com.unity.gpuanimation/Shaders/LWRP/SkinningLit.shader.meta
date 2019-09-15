@@ -5,5 +5,5 @@ ShaderImporter:
   defaultTextures: []
   nonModifiableTextures: []
   userData: 
-  assetBundleName: smframe/plugins/com.unity.gpuanimation/shaders/lwrp.ab
+  assetBundleName: com.unity.gpuanimation/shaders/lwrp.ab
   assetBundleVariant: 
