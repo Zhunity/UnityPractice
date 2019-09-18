@@ -142,28 +142,8 @@ namespace Unity.GPUAnimation
 			{
 				for (int boneIndex = 0; boneIndex < sampledBoneMatrices[i].GetLength(1); boneIndex++)
 				{
-					//Color previousRotation = new Color();
-
 					for (int keyframeIndex = 0; keyframeIndex < sampledBoneMatrices[i].GetLength(0); keyframeIndex++)
 					{
-						//var rotation = GetRotation(Quaternion.LookRotation(sampledBoneMatrices[i][keyframeIndex, boneIndex].GetColumn(2),
-						//													sampledBoneMatrices[i][keyframeIndex, boneIndex].GetColumn(1)));
-
-						//if (keyframeIndex != 0)
-						//{
-						//	if (Distance(previousRotation, rotation) > Distance(Negate(rotation), previousRotation))
-						//	{
-						//		rotation = new Color(-rotation.r, -rotation.g, -rotation.b, -rotation.a);
-						//	}
-						//}
-
-						//var translation = GetTranslation(sampledBoneMatrices[i][keyframeIndex, boneIndex].GetColumn(3), rotation);
-
-						//previousRotation = rotation;
-						//int index = Get1DCoord(runningTotalNumberOfKeyframes + keyframeIndex, boneIndex, bakedData.TranslationTexture.width);
-						//translations[index] = translation;
-						//rotations[index] = rotation;
-
 						int index = Get1DCoord(runningTotalNumberOfKeyframes + keyframeIndex, boneIndex, tex0.width);
 
 						// 将sampledBoneMatrices的数据全部存入到材质颜色中
@@ -404,29 +384,6 @@ namespace Unity.GPUAnimation
 			newMesh.uv = originalMesh.uv;
 			newMesh.tangents = originalMesh.tangents;
 			newMesh.name = originalMesh.name;
-		}
-
-		private static float Distance(Color r1, Color r2)
-		{
-			return Mathf.Abs(r1.r - r2.r) + Mathf.Abs(r1.g - r2.g) + Mathf.Abs(r1.b - r2.b) + Mathf.Abs(r1.a - r2.a);
-		}
-
-		private static Color Negate(Color c)
-		{
-			return new Color(-c.r, -c.g, -c.b, -c.a);
-		}
-
-		private static Color GetTranslation(Vector4 rawTranslation, Color rotation)
-		{
-			Quaternion rot = new Quaternion(rotation.r, rotation.g, rotation.b, rotation.a);
-			Quaternion trans = new Quaternion(rawTranslation.x, rawTranslation.y, rawTranslation.z, 0) * rot;
-
-			return new Color(trans.x, trans.y, trans.z, trans.w) * 0.5f;
-		}
-
-		private static Color GetRotation(Quaternion rotation)
-		{
-			return new Color(rotation.x, rotation.y, rotation.z, rotation.w);
 		}
 
 		private static int Get1DCoord(int x, int y, int width)
