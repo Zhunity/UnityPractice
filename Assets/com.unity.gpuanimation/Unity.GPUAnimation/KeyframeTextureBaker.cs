@@ -10,6 +10,7 @@ namespace Unity.GPUAnimation
 	/// <summary>
 	/// 存储转换成Texture2D数据的动画片段
 	/// 每个动画片段会在定点处进行三次采样
+	/// file:///C:/Program%20Files/Unity/Hub/Editor/2019.2.2f1/Editor/Data/Documentation/en/ScriptReference/Texture2D.html
 	/// </summary>
 	public struct AnimationTextures : IEquatable<AnimationTextures>
 	{
@@ -64,7 +65,7 @@ namespace Unity.GPUAnimation
 		}
 
 		/// <summary>
-		/// 
+		/// IMPORTENT！！！
 		/// </summary>
 		/// <param name="animationRoot">动画根对象</param>
 		/// <param name="animationClips">动画片段数组</param>
@@ -85,6 +86,7 @@ namespace Unity.GPUAnimation
 			// Instantiate the character, but make sure it's inactive so it doesn't trigger any unexpected systems. 
 			var wasActive = animationRoot.activeSelf;
 			animationRoot.SetActive(false);
+			// TODO 感觉这里应该是不需要再实例化的，程序加载模型的时候已经完成了
 			var instance = GameObject.Instantiate(animationRoot, Vector3.zero, Quaternion.identity);
 			animationRoot.SetActive(wasActive);
 			
@@ -117,6 +119,7 @@ namespace Unity.GPUAnimation
 
 			int numberOfBones = sampledBoneMatrices[0].GetLength(1);
 
+			// QUESTION：为什么都弄三个一样的？
 			// 使用骨骼数和关键帧数作为大小创建材质
 			var tex0 = bakedData.AnimationTextures.Animation0 = new Texture2D(numberOfKeyFrames, numberOfBones, TextureFormat.RGBAFloat, false);
 			tex0.wrapMode = TextureWrapMode.Clamp;
@@ -288,7 +291,7 @@ namespace Unity.GPUAnimation
 			// Skinning bine weights of a vertex in the mesh.
 			// Each vertex is skinned with up to fout bones. All weights should sum up to one. Weights and bone indices should be defined in the order of decreasing weight. 
 			// if a vertex is affected by less than four bones, the remaining weights should be zeroes.
-			// TODO 粘一个官方文档地址
+			// file:///C:/Program%20Files/Unity/Hub/Editor/2019.2.2f1/Editor/Data/Documentation/en/ScriptReference/Mesh-boneWeights.html
 			var boneWeights = originalMesh.boneWeights;
 			var bones = originalRenderer.bones; // bones 见bindposes
 			for (int i = 0; i < originalMesh.vertexCount; i++)

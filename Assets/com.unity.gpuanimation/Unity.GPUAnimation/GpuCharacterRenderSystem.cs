@@ -40,14 +40,46 @@ namespace Unity.GPUAnimation
 	/// </summary>
 	public struct BakedAnimationClip
 	{
+		/// <summary>
+		/// start = (float)clipData.PixelStart / animTextures.Animation0.width
+		/// </summary>
 		internal float TextureOffset;
+
+		/// <summary>
+		/// end - start
+		/// </summary>
 		internal float TextureRange;
+
+		/// <summary>
+		/// 1f / animTextures.Animation0.width
+		/// </summary>
 		internal float OnePixelOffset;
+
+		/// <summary>
+		/// animTextures.Animation0.width
+		/// Width of the texture in pixels. (Read Only)
+		/// 相对应的有个height(Height of the texture in pixels. (Read Only))
+		/// </summary>
 		internal float TextureWidth;
+
+		/// <summary>
+		/// 1.0F / TextureWidth
+		/// </summary>
 		internal float OneOverTextureWidth;
+
+		/// <summary>
+		/// 1.0F / OnePixelOffset
+		/// </summary>
 		internal float OneOverPixelOffset;
 
+		/// <summary>
+		/// clipData.Clip.length
+		/// </summary>
 		public float AnimationLength;
+
+		/// <summary>
+		/// clipData.Clip.wrapMode == WrapMode.Loop
+		/// </summary>
 		public bool  Looping;
 
 		public BakedAnimationClip(AnimationTextures animTextures, KeyframeTextureBaker.AnimationClipData clipData)
@@ -60,6 +92,7 @@ namespace Unity.GPUAnimation
 			TextureRange = end - start;
 			OnePixelOffset = onePixel;
 			TextureWidth = animTextures.Animation0.width;
+			// QUESTION 为什么要倒数？
 			OneOverTextureWidth = 1.0F / TextureWidth;
 			OneOverPixelOffset = 1.0F / OnePixelOffset;
 			
@@ -72,18 +105,38 @@ namespace Unity.GPUAnimation
 			float texturePosition = normalizedTime * TextureRange + TextureOffset;
 			float lowerPixelFloor = math.floor(texturePosition * TextureWidth);
 
+			/// QUESTION：OneOverTextureWidth和OnePixelOffset难道不是同一个东西吗？
+			/// TextureWidth = animTextures.Animation0.width;
+			/// OneOverTextureWidth = 1.0F / TextureWidth;
+			/// float onePixel = 1f / animTextures.Animation0.width;
+			/// OnePixelOffset = onePixel;
 			float lowerPixelCenter = lowerPixelFloor * OneOverTextureWidth;
 			float upperPixelCenter = lowerPixelCenter + OnePixelOffset;
+			/// QUESTION：TextureWidth和OneOverPixelOffset有什么区别？
+			/// TextureWidth = animTextures.Animation0.width;
+			/// float onePixel = 1f / animTextures.Animation0.width;
+			///  OnePixelOffset = onePixel;
+			///  OneOverPixelOffset = 1.0F / OnePixelOffset;
 			float lerpFactor = (texturePosition - lowerPixelCenter) * OneOverPixelOffset;
 
 			return  new float3(lowerPixelCenter, upperPixelCenter, lerpFactor);
 		}
 		
+		/// <summary>
+		/// 计算当前时间，获得一个比0大，比1小的百分比
+		/// </summary>
+		/// <param name="time"></param>
+		/// <returns></returns>
 		public float ComputeNormalizedTime(float time)
 		{
 			if (Looping)
 				return Mathf.Repeat(time, AnimationLength) / AnimationLength;
 			else
+				// Returns the result of clamping the value x into the interval [a, b], where x, a and b are float values.
+				// public static float saturate(float x) { return clamp(x, 0.0f, 1.0f); }
+
+				/// <summary>Returns the result of clamping the value x into the interval [a, b], where x, a and b are float values.</summary>
+				/// public static float clamp(float x, float a, float b) { return max(a, min(b, x)); }
 				return math.saturate(time / AnimationLength);
 		}
 
@@ -121,7 +174,16 @@ namespace Unity.GPUAnimation
 
 	unsafe public static class NativeExtensionTemp
 	{
-        public static NativeArray<U> Reinterpret_Temp<T, U>(this NativeArray<T> array) where U : struct where T : struct
+		/// <summary>
+		/// 扩展函数
+		///  Reinterpret：重新解释
+		///  NativeArray<T>转换成 NativeArray<U>
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <typeparam name="U"></typeparam>
+		/// <param name="array"></param>
+		/// <returns></returns>
+		public static NativeArray<U> Reinterpret_Temp<T, U>(this NativeArray<T> array) where U : struct where T : struct
         {
             var tSize = UnsafeUtility.SizeOf<T>();
             var uSize = UnsafeUtility.SizeOf<U>();
