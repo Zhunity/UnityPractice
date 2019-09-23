@@ -47,6 +47,7 @@ namespace Unity.GPUAnimation
             objectToWorldBuffer = new ComputeBuffer(PreallocatedBufferSize, 16 * sizeof(float));
             textureCoordinatesBuffer = new ComputeBuffer(PreallocatedBufferSize, 3 * sizeof(float));
 	
+			// TODO 这里应该还要去看看shader里面的东西了
             this.material.SetBuffer("textureCoordinatesBuffer", textureCoordinatesBuffer);
             this.material.SetBuffer("objectToWorldBuffer", objectToWorldBuffer);
 
