@@ -244,6 +244,11 @@ namespace Unity.GPUAnimation
     {
 		// 创建绘制的角色列表
 	    private List<RenderCharacter> _Characters = new List<RenderCharacter>();
+
+
+		/// <summary>
+		/// 这个只有Add，没有Remove
+		/// </summary>
 	    private Dictionary<RenderCharacter, InstancedSkinningDrawer> _Drawers = new Dictionary<RenderCharacter, InstancedSkinningDrawer>();
 
 	    private EntityQuery m_Characters;
@@ -267,7 +272,14 @@ namespace Unity.GPUAnimation
 			        drawer = new InstancedSkinningDrawer(character.Material, character.Mesh, character.AnimationTexture);
 			        _Drawers.Add(character, drawer);
 		        }
-		        
+
+				/// <summary>
+				/// Filters this EntityQuery so that it only selects entities with shared component values
+				/// matching the values specified by the `sharedComponent1` parameter.
+				/// </summary>
+				/// <param name="sharedComponent1">The shared component values on which to filter.</param>
+				/// <typeparam name="SharedComponent1">The type of shared component. (The type must also be
+				/// one of the types used to create the EntityQuery.</typeparam>
 				m_Characters.SetFilter(character);
 
 				Profiler.BeginSample("ExtractState");

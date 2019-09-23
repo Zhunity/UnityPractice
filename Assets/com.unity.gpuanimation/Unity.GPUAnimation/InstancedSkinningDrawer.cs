@@ -11,7 +11,18 @@ namespace Unity.GPUAnimation
     {
         private const int PreallocatedBufferSize = 1024;
 
-        private ComputeBuffer argsBuffer;
+		/*
+		 * file:///C:/Program%20Files/Unity/Hub/Editor/2019.2.5f1/Editor/Data/Documentation/en/ScriptReference/ComputeBuffer.html
+		 * ComputeShader programs often need arbitrary data to be read & written into memory buffers. ComputeBuffer class is exactly for that - you can create & fill them from script code, and use them in compute shaders or regular shaders.
+
+			Compute buffers are always supported in compute shaders. Compute shader support can be queried runtime using SystemInfo.supportsComputeShaders. See the Compute Shaders Manual page for more information about platforms supporting compute shaders. In regular graphics shaders the compute buffer support requires minimum shader model 4.5.
+
+			On the shader side, ComputeBuffers with default ComputeBufferType map to StructuredBuffer<T> and RWStructuredBuffer<T> in HLSL.
+
+			See Also: ComputeShader class, Shader.SetGlobalBuffer, Material.SetBuffer, Compute Shaders overview.
+		 */
+
+		private ComputeBuffer argsBuffer;
 
         private readonly uint[] indirectArgs = new uint[5] { 0, 0, 0, 0, 0 };
 
@@ -38,7 +49,10 @@ namespace Unity.GPUAnimation
 	
             this.material.SetBuffer("textureCoordinatesBuffer", textureCoordinatesBuffer);
             this.material.SetBuffer("objectToWorldBuffer", objectToWorldBuffer);
-            this.material.SetTexture("_AnimationTexture0", animTexture.Animation0);
+
+			// file:///C:/Program%20Files/Unity/Hub/Editor/2019.2.5f1/Editor/Data/Documentation/en/ScriptReference/Material.SetTexture.html
+			// Many shaders use more than one texture. Use SetTexture to change the texture (identified by shader property name, or unique property name ID).
+			this.material.SetTexture("_AnimationTexture0", animTexture.Animation0);
             this.material.SetTexture("_AnimationTexture1", animTexture.Animation1);
             this.material.SetTexture("_AnimationTexture2", animTexture.Animation2);
         }
@@ -71,6 +85,7 @@ namespace Unity.GPUAnimation
                 textureCoordinatesBuffer = new ComputeBuffer(TextureCoordinates.Length, 3 * sizeof(float));
             }
 
+			// QUESTION:这里设置了，为什么初始化还要设置一遍？感觉多余了
             this.material.SetBuffer("textureCoordinatesBuffer", textureCoordinatesBuffer);
             this.material.SetBuffer("objectToWorldBuffer", objectToWorldBuffer);
             
