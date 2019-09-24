@@ -17,7 +17,7 @@ RWStructuredBuffer<Data> outputData;
 [numthreads(8,8,1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
 {
-	outputData[id.x].A = inputData[id.x].A * 3;
-	outputData[id.x].B = inputData[id.x].B * 3;
-	outputData[id.x].C = inputData[id.x].C * 3;
+	outputData[id.x].A = inputData[id.x].A * 2;
+	outputData[id.x].B = inputData[id.x].B * 2;
+	outputData[id.x].C = inputData[id.x].C * 2;
 }

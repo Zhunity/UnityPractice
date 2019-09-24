@@ -39,6 +39,7 @@ public class Compute : MonoBehaviour
 
 		// 计算，并输出至CPU
 		shader.SetBuffer(k, "outputData", outputBuffer);
+		shader.Dispatch(k, outputData.Length, 1, 1);
 		outputBuffer.GetData(outputData);
 
 		// 打印结果
