@@ -264,7 +264,7 @@ namespace Unity.GPUAnimation
 				// bindposes :
 				// The bind poses. The bind pose at each index refers to the bone with the same index.
 				// The bind pose is the inverse of the transformation matrix of the bone, when the bone is in the bind pose.
-				// TODO 粘一个官方文档地址 还有试试官方文档里面的代码，看看都是些什么效果
+				// https://docs.unity3d.com/ScriptReference/Mesh-bindposes.html
 				var originalBindPoseMatrices = originalRenderer.sharedMesh.bindposes;
 				var newBindPoseMatrices = mesh.bindposes;
 				
@@ -278,8 +278,10 @@ namespace Unity.GPUAnimation
 					boneRemapping = new int[originalBindPoseMatrices.Length];
 					for (int i = 0; i < boneRemapping.Length; i++)
 					{
-						// 新-》旧的定向？
+						// 新-》旧的定向
 						// newBindPoseMatrices是LodData里面的mesh
+						// 找到originalBindPoseMatrices里面等于newBindPoseMatrices[i]的index，存进boneRemapping[i]
+						// newBindPoseMatrices[i]通过boneRemapping[i]找到originalBindPoseMatrices里的index
 						boneRemapping[i] = Array.FindIndex(originalBindPoseMatrices, x => x == newBindPoseMatrices[i]);
 					}
 				}
@@ -296,7 +298,7 @@ namespace Unity.GPUAnimation
 			var bones = originalRenderer.bones; // bones 见bindposes
 			for (int i = 0; i < originalMesh.vertexCount; i++)
 			{
-				// 只受两根骨骼影响吗?
+				// QUESTION:只受两根骨骼影响吗?
 				int boneIndex0 = boneWeights[i].boneIndex0;
 				int boneIndex1 = boneWeights[i].boneIndex1;
 
