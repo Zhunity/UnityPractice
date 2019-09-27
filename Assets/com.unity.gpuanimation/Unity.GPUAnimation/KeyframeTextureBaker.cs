@@ -192,21 +192,31 @@ namespace Unity.GPUAnimation
 			tex2.filterMode = FilterMode.Point;
 			tex2.anisoLevel = 0;
 
+			// 感觉后面又开始玩骚操作了。。。
+			// QUESTION:虽然tex0 1 2是一样的，但这里应该也是对应的0 1 2吧？
+			// ANSWER:对的，应该对应一下。详见这个循环之后的tex0.SetPixels(texture0Color);
 			Color[] texture0Color = new Color[tex0.width * tex0.height];
 			Color[] texture1Color = new Color[tex0.width * tex0.height];
 			Color[] texture2Color = new Color[tex0.width * tex0.height];
 
 			int runningTotalNumberOfKeyframes = 0;
+			// sampledBoneMatrices.Count = animationClips.Length, 即循环所有动作的关键帧动作骨骼数据
 			for (int i = 0; i < sampledBoneMatrices.Count; i++)
 			{
+				// sampledBoneMatrices[i].GetLength(1) 骨骼数量
 				for (int boneIndex = 0; boneIndex < sampledBoneMatrices[i].GetLength(1); boneIndex++)
 				{
+					// sampledBoneMatrices[i].GetLength(0) 关键帧数量
 					for (int keyframeIndex = 0; keyframeIndex < sampledBoneMatrices[i].GetLength(0); keyframeIndex++)
 					{
+						// Get1DCoord(){y * width + x};
+						// tex0.width = 所有动画的关键帧数量
+						// runningTotalNumberOfKeyframes 最外围所有动作循环时， 一次+一个动作的关键帧数量
 						int index = Get1DCoord(runningTotalNumberOfKeyframes + keyframeIndex, boneIndex, tex0.width);
 
 						// 将sampledBoneMatrices的数据全部存入到材质颜色中
-						texture0Color[index] = sampledBoneMatrices[i][keyframeIndex, boneIndex].GetRow(0);
+						// QUESTION:为什么没有第四行数据
+						texture0Color[index] = sampledBoneMatrices[i][keyframeIndex, boneIndex].GetRow(0);		// 第一行数据
 						texture1Color[index] = sampledBoneMatrices[i][keyframeIndex, boneIndex].GetRow(1);
 						texture2Color[index] = sampledBoneMatrices[i][keyframeIndex, boneIndex].GetRow(2);
 					}
@@ -216,10 +226,12 @@ namespace Unity.GPUAnimation
 				{
 					Clip = animationClips[i],
 					// 生成AnimationClipData需要的开始结束位置
+					// QUESTION：为什么第0个不用呢？按理说第0个也是这个动作的
 					PixelStart = runningTotalNumberOfKeyframes + 1,
-					PixelEnd = runningTotalNumberOfKeyframes + sampledBoneMatrices[i].GetLength(0) - 1
+					PixelEnd = runningTotalNumberOfKeyframes + sampledBoneMatrices[i].GetLength(0) - 1  // runningTotalNumberOfKeyframes 之前所有动作的帧数和，sampledBoneMatrices[i].GetLength(0) 这一个动作的帧数数量
 				};
 
+				// QUESTION：为什么默认的就要-1
 				if (clipData.Clip.wrapMode == WrapMode.Default) clipData.PixelEnd -= 1;
 
 				bakedData.Animations.Add(clipData);
