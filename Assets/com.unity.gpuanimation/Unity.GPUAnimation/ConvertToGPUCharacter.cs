@@ -6,6 +6,14 @@ namespace Unity.GPUAnimation
 {
 	public static class CharacterUtility
 	{
+		/// <summary>
+		/// Blob		
+		/// n. 	(尤指液体的) 一点，一滴; (颜色的) 一小片，斑点;
+		/// vt.弄脏; 弄错
+		/// https://gametorrahod.com/everything-about-isharedcomponentdata/
+		/// </summary>
+		/// <param name="data"></param>
+		/// <returns></returns>
 		public static BlobAssetReference<BakedAnimationClipSet> CreateClipSet(KeyframeTextureBaker.BakedData data)
 		{
 			using (var builder = new BlobBuilder(Allocator.Temp))
