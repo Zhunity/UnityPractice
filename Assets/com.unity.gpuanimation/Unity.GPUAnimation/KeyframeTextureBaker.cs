@@ -150,6 +150,21 @@ namespace Unity.GPUAnimation
 			// boundary			n. 	边界; 界限; 分界线; 使球越过边界线的击球(得加分);
 			// axis				n.轴
 			tex0.wrapMode = TextureWrapMode.Clamp;
+
+			// https://docs.unity3d.com/ScriptReference/FilterMode.html 有例子
+			// Point		Point filtering - texture pixels become blocky up close
+			// Bilinear		Bilinear filtering - texture samples are averaged
+			// Trilinear	Trilinear filtering - texture samples are averaged and also blended between mipmap levels. For textures without mipmaps, this setting is the same as Bilinear
+			// https://docs.unity3d.com/ScriptReference/Texture-filterMode.html
+
+			// filtering		v. 	过滤; (用程序) 筛选; 缓行
+			// blocky			adj. 	块状结构的；短而粗的；结实的；浓淡不匀的
+			// blocky up		阻塞 
+			// blocky up close	近距离封锁
+			// Bilinear			adj. 	双直线的；双线性的；双一次性的
+			// averaged			v. 	平均为; 计算出…的平均数
+			// Trilinear		三线性; 三线性过滤; 三线过滤; 三线; 三折线
+			// blend			v. 	使混合; 掺和; (和某物) 混合; 融合; (使) 调和，协调;
 			tex0.filterMode = FilterMode.Point;
 			tex0.anisoLevel = 0;
 
