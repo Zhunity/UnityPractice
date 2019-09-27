@@ -182,6 +182,7 @@ namespace Unity.GPUAnimation
 			 */
 			tex0.anisoLevel = 0;
 
+			// var tex1 = bakedData.AnimationTextures.Animation1 还是有用的，不要怀疑，等会再看看有什么用
 			var tex1 = bakedData.AnimationTextures.Animation1 = new Texture2D(numberOfKeyFrames, numberOfBones, TextureFormat.RGBAFloat, false);
 			tex1.wrapMode = TextureWrapMode.Clamp;
 			tex1.filterMode = FilterMode.Point;
@@ -244,14 +245,13 @@ namespace Unity.GPUAnimation
 			tex2.SetPixels(texture2Color);
 
 			runningTotalNumberOfKeyframes = 0;
+			// 这一段循环大概就是检验过程了，看看算出来的结果对不对
 			for (int i = 0; i < sampledBoneMatrices.Count; i++)
 			{
 				for (int boneIndex = 0; boneIndex < sampledBoneMatrices[i].GetLength(1); boneIndex++)
 				{
 					for (int keyframeIndex = 0; keyframeIndex < sampledBoneMatrices[i].GetLength(0); keyframeIndex++)
 					{
-						//int d1_index = Get1DCoord(runningTotalNumberOfKeyframes + keyframeIndex, boneIndex, bakedData.Texture0.width);
-
 						Color pixel0 = tex0.GetPixel(runningTotalNumberOfKeyframes + keyframeIndex, boneIndex);
 						Color pixel1 = tex1.GetPixel(runningTotalNumberOfKeyframes + keyframeIndex, boneIndex);
 						Color pixel2 = tex2.GetPixel(runningTotalNumberOfKeyframes + keyframeIndex, boneIndex);
@@ -273,6 +273,25 @@ namespace Unity.GPUAnimation
 				runningTotalNumberOfKeyframes += sampledBoneMatrices[i].GetLength(0);
 			}
 
+			/*https://docs.unity3d.com/ScriptReference/Texture2D.Apply.html 有例子
+			 * Actually apply all previous SetPixel and SetPixels changes
+			 * 
+			 * if updateMipmaps is true, the mipmap levels are recalculated as well , using the base level as a source. Usually you want to use true in all cases except when you've
+			 * modified the mip levels yourself using SetPixels. By default updateMipmaps is set to true
+			 * 
+			 * If makeNolongerReadable is true, texture will be marked as no longer readable and memory will be freed after uploading to GPU. By default makeNoLongerReadable is set to false.
+			 * 
+			 * Apply is a potentially expensive operation, so you'll want to change as many pixels as possible between Apply calls.
+			 * 
+			 * Alternatively, if you don't need to access the pixels on the CPU, you could use Graphics.CopyTexture for fast GPU-side texture data copies. Note that calling Apply may
+			 * undo the results of previous calls to Graphics.CopyTexture
+			 * 
+			 * The texture has to have is Readable flag set in the import settings.
+			 * 
+			 * previous			adj. 	先前的; 以往的; (时间上) 稍前的;
+			 * potentially		adv. 	潜在地
+			 * Alternatively	adv. 	(引出第二种选择或可能的建议) 要不，或者
+			 */
 			tex0.Apply(false, true);
 			tex1.Apply(false, true);
 			tex2.Apply(false, true);
