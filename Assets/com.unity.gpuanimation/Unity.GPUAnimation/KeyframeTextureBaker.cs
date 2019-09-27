@@ -255,7 +255,6 @@ namespace Unity.GPUAnimation
 			Vector2[] boneIds = new Vector2[originalMesh.vertexCount];			// 骨骼id，骨骼数量=顶点数量？ 猜测是boneweight里面的index？
 			Vector2[] boneInfluences = new Vector2[originalMesh.vertexCount];   // influence 影响				猜测是boneWeight里的weight？
 
-			#region 没看懂
 			// 旧-》新的定向
 			int[] boneRemapping = null;
 
@@ -302,6 +301,7 @@ namespace Unity.GPUAnimation
 				int boneIndex0 = boneWeights[i].boneIndex0;
 				int boneIndex1 = boneWeights[i].boneIndex1;
 
+				// 如果boneRemapping为空，表示mesh为空，则不需要进行映射
 				if (boneRemapping != null)
 				{
 					// originalBindPoseMatrices[boneRemapping[i]] = newBindPoseMatrices[i]
@@ -309,18 +309,23 @@ namespace Unity.GPUAnimation
 					boneIndex1 = boneRemapping[boneIndex1];
 				}
 
+				#region 这里可能有一种说法，但是不懂，需要学习
 				// 通过boneWights的boneIndex0和boneIndex1生成的boneInfluences,作为newMesh的UV2和UV3存储起来
+				// QUESTION:+0.5是为了四舍五入吗？但是index为int，也没必要四舍五入
+				// QUESTION:求index/length的比值有什么用
+				// TODO 要看一下shader才知道了
 				boneIds[i] = new Vector2((boneIndex0 + 0.5f) / bones.Length, (boneIndex1 + 0.5f) / bones.Length);
 
 				float mostInfluentialBonesWeight = boneWeights[i].weight0 + boneWeights[i].weight1;
 
+				// 同上疑问
+				// 比较两个骨头的权重？
 				boneInfluences[i] = new Vector2(boneWeights[i].weight0 / mostInfluentialBonesWeight, boneWeights[i].weight1 / mostInfluentialBonesWeight);
 			}
-			#endregion
 			newMesh.vertices = vertices;
 			newMesh.uv2 = boneIds;
 			newMesh.uv3 = boneInfluences;
-
+			#endregion
 			return newMesh;
 		}
 
