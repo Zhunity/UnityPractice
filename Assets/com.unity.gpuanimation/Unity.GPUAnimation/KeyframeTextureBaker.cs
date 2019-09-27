@@ -343,13 +343,22 @@ namespace Unity.GPUAnimation
 			var bindPoses = renderer.sharedMesh.bindposes;
 			var bones = renderer.bones;
 			// 创建一个长为（帧率*动作时长）+3，宽为骨骼数量的4x4矩阵
-			// 个人猜测，用于记录每一帧的所有骨骼的位置
+			// 个人猜测，用于记录每一帧的所有骨骼的位置(感觉没错)
+			// [行，列]
+			// QUESTION : +3 是为什么
 			Matrix4x4[,] boneMatrices = new Matrix4x4[Mathf.CeilToInt(framerate * clip.length) + 3, bones.Length];
+
+			// TODO 输出framerate， bones.Length
 			//Debug.Log("clip.name:" + clip.name + "  clip.length:" + clip.length +"  boneMatrices.Length:" + boneMatrices.Length + "  boneMatrices.GetLength(0):" + boneMatrices.GetLength(0));
 			// clip.name:Walk  clip.length:0.5333334  boneMatrices.Length:595  boneMatrices.GetLength(0):35
+
+			// Array.GetLength(int dimension)获取一个 32 位整数，该整数表示 Array 的指定维中的元素数。
+			// boneMatrices.GetLength(0) 获取的是Mathf.CeilToInt(framerate * clip.length) + 3
+			// QUESTION : 为什么从1开始
 			for (int i = 1; i < boneMatrices.GetLength(0) - 1; i++)
 			{
 				// 选取当前所在帧的clip数据作为一段时间的采样
+				// QUESTION : 既然这里要-3， 为什么一开始要加三？
 				float t = (float)(i - 1) / (boneMatrices.GetLength(0) - 3);
 
 				// WrapMode :
@@ -366,17 +375,28 @@ namespace Unity.GPUAnimation
 				// ClampForever	: Plays back the animation. When it reaches the end, it will keep playing the last fram and never stop playing.
 				var oldWrapMode = clip.wrapMode;
 				clip.wrapMode = WrapMode.Clamp;
+
+				// Samples an animation at a given time for any animated properties.
+				// It is recommended to use the Animation interface instead for performance reasons. This will sample animation at the given time. Any component properties that are
+				// animated in the clip will be replaced with the sampled value. Most of the time you want to use Animation.Play instead. SampleAnimation is useful when you need to jump between frames in an unordered way 
+				// or based on some special input.
+				// https://docs.unity3d.com/ScriptReference/AnimationClip.SampleAnimation.html
+				// unordered 无序的
+				// QUESTION 为什么循环里面要从0-1之间取样
 				clip.SampleAnimation(root, t * clip.length);
 				clip.wrapMode = oldWrapMode;
 				
 				for (int j = 0; j < bones.Length; j++)
+					// 从模型坐标转换成世界坐标
 					boneMatrices[i, j] = bones[j].localToWorldMatrix * bindPoses[j];
 			}
 
 			for (int j = 0; j < bones.Length; j++)
 			{
-				boneMatrices[0, j] = boneMatrices[boneMatrices.GetLength(0) - 2, j];
-				boneMatrices[boneMatrices.GetLength(0) - 1, j] = boneMatrices[1, j];
+				// 感觉是骷髅死亡动作开始时状态不对的直接原因
+				// QUESTION:但是为什么要这么乱赋值？
+				boneMatrices[0, j] = boneMatrices[boneMatrices.GetLength(0) - 2, j];    // 把倒数第二帧赋值给第一帧
+				boneMatrices[boneMatrices.GetLength(0) - 1, j] = boneMatrices[1, j];	// 把第二帧赋值给最后一帧
 			}
 
 			return boneMatrices;
