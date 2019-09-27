@@ -107,6 +107,7 @@ namespace Unity.GPUAnimation
 
 			int numberOfKeyFrames = 0;
 
+			// 获取所有动画的数据
 			for (int i = 0; i < animationClips.Length; i++)
 			{
 				// 使用SampleAnimationClip方法对每个动画片段采样得到sapledMatrix，然后添加到list中
@@ -114,14 +115,40 @@ namespace Unity.GPUAnimation
 				sampledBoneMatrices.Add(sampledMatrix);
 
 				// 使用sampledBoneMatrices的维数参数作为关键帧和骨骼的数目统计
+				// 所有动画的关键帧数量
 				numberOfKeyFrames += sampledMatrix.GetLength(0);
 			}
 
+			// 返回列数，即骨头数量
 			int numberOfBones = sampledBoneMatrices[0].GetLength(1);
 
 			// QUESTION：为什么都弄三个一样的？
 			// 使用骨骼数和关键帧数作为大小创建材质
+			// width = 所有动画的关键帧数量, height = 骨头数量
 			var tex0 = bakedData.AnimationTextures.Animation0 = new Texture2D(numberOfKeyFrames, numberOfBones, TextureFormat.RGBAFloat, false);
+
+			// https://docs.unity3d.com/ScriptReference/TextureWrapMode.html
+			// Corresponds to the settings in a texture inspector. Wrap mode determines how texture is sampled when texture coordinates are outside of the typical 0..1 range. For
+			// example, Repeat makes the texture tile, whereas Clamp makes the texture edge pixels be stretched when outside of 0..1 range.
+			// Repeat:	Tiles the texture, creating a repeating pattern
+			// Clamp:	Clamps the texture to the last pixel at the edge
+			// Mirror:	Tiles the texture, creating a repeating pattern by mirroring it at every integer boundary
+			// MorrorOnce: Mirrors the texture once, then clamps to edge pixels.
+			// https://docs.unity3d.com/ScriptReference/Texture-wrapMode.html
+			// Using wrapMode sets the same wrapping mode on all axes. Different per-axis wrap modes can be set using wrapModeU, wrapModeV, wrapModeW. Querying the value
+			// returns the U axis wrap mode(same as warpModeU getter)
+
+			// Corresponds :	v. 	相一致; 符合; 类似于; 相当于; 通信
+			// wrap:			v. 	包，裹(礼物等); 用…包裹(或包扎、覆盖等); 用…缠绕(或围紧)
+			// typical			adj. 	典型的; 有代表性的; 一贯的; 平常的; 不出所料; 特有的
+			// tile:			v. 	铺瓦; 铺地砖; 贴瓷砖; 平铺显示，并列显示，瓦片式显示(视窗)		个人感觉就是平铺了吧
+			// whereas:			conj. 	(用以比较或对比两个事实) 然而，但是，尽管; (用于正式文件中句子的开头) 鉴于
+			// Clamp:			n. 	夹具; 夹子; 夹钳; 车轮夹锁(用于锁住违章停放的车辆);
+			// stretch			v. 	拉长; 拽宽; 撑大; 抻松; 有弹性(或弹力); 拉紧; 拉直; 绷紧
+			// pattern			n. 	模式; 方式; 范例; 典范; 榜样; 样板; 图案; 花样; 式样
+			// integer			n. 	整数
+			// boundary			n. 	边界; 界限; 分界线; 使球越过边界线的击球(得加分);
+			// axis				n.轴
 			tex0.wrapMode = TextureWrapMode.Clamp;
 			tex0.filterMode = FilterMode.Point;
 			tex0.anisoLevel = 0;
@@ -331,13 +358,13 @@ namespace Unity.GPUAnimation
 
 		#region 没看懂
 		/// <summary>
-		/// 
+		/// 动画采样
 		/// </summary>
 		/// <param name="root">动画对象</param>
 		/// <param name="clip">单个动画片段</param>
 		/// <param name="renderer">SkinnedMeshRenderer</param>
 		/// <param name="framerate">帧率</param>
-		/// <returns>动画片段采样后生成的Matrices</returns>
+		/// <returns>动画片段采样后生成的Matrices，一个行数为（帧率*动作时长）+3，列数为骨骼数量的4x4矩阵</returns>
 		private static Matrix4x4[,] SampleAnimationClip(GameObject root, AnimationClip clip, SkinnedMeshRenderer renderer, float framerate)
 		{
 			var bindPoses = renderer.sharedMesh.bindposes;
