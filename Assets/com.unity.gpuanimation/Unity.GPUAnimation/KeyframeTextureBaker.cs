@@ -256,6 +256,7 @@ namespace Unity.GPUAnimation
 			Vector2[] boneInfluences = new Vector2[originalMesh.vertexCount];   // influence 影响				猜测是boneWeight里的weight？
 
 			#region 没看懂
+			// 旧-》新的定向
 			int[] boneRemapping = null;
 
 			// 如果mesh非空，找到Mesh在sharedMesh中对应的bindPoses，把boneIndex0和bineIndex1映射到给定的Mesh上
@@ -278,10 +279,9 @@ namespace Unity.GPUAnimation
 					boneRemapping = new int[originalBindPoseMatrices.Length];
 					for (int i = 0; i < boneRemapping.Length; i++)
 					{
-						// 新-》旧的定向
 						// newBindPoseMatrices是LodData里面的mesh
 						// 找到originalBindPoseMatrices里面等于newBindPoseMatrices[i]的index，存进boneRemapping[i]
-						// newBindPoseMatrices[i]通过boneRemapping[i]找到originalBindPoseMatrices里的index
+						// originalBindPoseMatrices[boneRemapping[i]] = newBindPoseMatrices[i]
 						boneRemapping[i] = Array.FindIndex(originalBindPoseMatrices, x => x == newBindPoseMatrices[i]);
 					}
 				}
@@ -304,6 +304,7 @@ namespace Unity.GPUAnimation
 
 				if (boneRemapping != null)
 				{
+					// originalBindPoseMatrices[boneRemapping[i]] = newBindPoseMatrices[i]
 					boneIndex0 = boneRemapping[boneIndex0];
 					boneIndex1 = boneRemapping[boneIndex1];
 				}
