@@ -165,7 +165,21 @@ namespace Unity.GPUAnimation
 			// averaged			v. 	平均为; 计算出…的平均数
 			// Trilinear		三线性; 三线性过滤; 三线过滤; 三线; 三折线
 			// blend			v. 	使混合; 掺和; (和某物) 混合; 融合; (使) 调和，协调;
+			// TODO 还不是很懂，可以试试那个例子，认识一下
 			tex0.filterMode = FilterMode.Point;
+
+			/*https://docs.unity3d.com/ScriptReference/Texture-anisoLevel.html
+			 * Anisotropic filtering level of the texture.
+			 * Anistoropic filtering makes textures look better when viewed at a shallow angle, but comes at a performance cost in the graphics hardware. Usually you use it on floor,
+			 * gournd or road textures to make them look better.
+			 * The value range of this variable goes from 1 to 9, where 1 equals no filtering applied and 9 equals full filtering applied. As the value gets bigger, the texture is clearer at
+			 * shallow angles. Lower values mean the texture will be more blurry at shallow angles.
+			 * 
+			 * Anisotropic		adj. 	各向异性的；屈光参差的
+			 * shallow			adj. 	浅的; 肤浅的; 浅薄的; (呼吸) 浅的，弱的
+			 * performance		n. 	表演; 演出; 艺术上的表现; 演技; 表现; 性能; 业绩; 工作情况
+			 * blurry			adj. 	模糊不清的
+			 */
 			tex0.anisoLevel = 0;
 
 			var tex1 = bakedData.AnimationTextures.Animation1 = new Texture2D(numberOfKeyFrames, numberOfBones, TextureFormat.RGBAFloat, false);
