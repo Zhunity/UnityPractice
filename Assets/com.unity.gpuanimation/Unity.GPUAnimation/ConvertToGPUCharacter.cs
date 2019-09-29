@@ -11,6 +11,8 @@ namespace Unity.GPUAnimation
 		/// n. 	(尤指液体的) 一点，一滴; (颜色的) 一小片，斑点;
 		/// vt.弄脏; 弄错
 		/// https://gametorrahod.com/everything-about-isharedcomponentdata/
+		/// source-chamber distance(不像)
+		/// chamber				n. 	会议厅; (议会的) 议院; (作特定用途的) 房间，室
 		/// tightly				adv. 	紧紧地; 牢固地; 紧密地
 		/// restriction			n. 	限制规定; 限制法规; 限制; 约束; 制约因素
 		/// portal				n. 	壮观的大门; 豪华的入口; 门户网站; 入口站点
@@ -36,6 +38,15 @@ namespace Unity.GPUAnimation
 		/// adjacent			adj. 	与…毗连的; 邻近的
 		/// galore				adj. 	大量; 很多
 		/// dare to				v. 	胆敢
+		/// segmenting			v. 	分割; 划分
+		/// segmenting via		分段通过 
+		/// extensively			adv. 	广大地；广泛地
+		/// fancy				adj. 	异常复杂的; 太花哨的; 精致的; 有精美装饰的; 绚丽的; 花哨的; 昂贵的; 奢华的
+		/// categorizing		v. 	将…分类; 把…加以归类
+		/// intending			v.打算; 计划; 想要; 意指
+		/// Quoted				v. 	引用; 引述; 举例说明; 开价; 出价; 报价
+		/// prior				adj. 	先前的; 较早的; 在前的; 优先的; 占先的; 较重要的; 在前面的
+		/// http://gametorrahod.com/designing-an-efficient-system-with-version-numbers/
 		/// </summary>
 		/// <param name="data"></param>
 		/// <returns></returns>
