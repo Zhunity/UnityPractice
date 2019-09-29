@@ -11,6 +11,31 @@ namespace Unity.GPUAnimation
 		/// n. 	(尤指液体的) 一点，一滴; (颜色的) 一小片，斑点;
 		/// vt.弄脏; 弄错
 		/// https://gametorrahod.com/everything-about-isharedcomponentdata/
+		/// tightly				adv. 	紧紧地; 牢固地; 紧密地
+		/// restriction			n. 	限制规定; 限制法规; 限制; 约束; 制约因素
+		/// portal				n. 	壮观的大门; 豪华的入口; 门户网站; 入口站点
+		/// Aliasing			n. 	别名使用；混淆现象
+		/// via					prep. 	经由，经过(某一地方); 通过，凭借(某人、系统等
+		/// sneak				v. 	偷偷地走; 溜; 偷偷地做; 偷带; 偷拿; 偷走(不重要的或小的东西)
+		/// concept				n. 	概念; 观念
+		/// optimizable			 可优化的
+		/// hell				n. 	地狱; 苦难的经历; 悲惨的境况; (有人认为含冒犯意) 该死，见鬼
+		/// kinda				用于笔语中，表示非正式会话中 kind of 的发音;
+		/// lawless				adj. 	无法律的; 不遵守法律的; 目无法纪的; 不法的
+		/// compatible			adj. 	可共用的; 兼容的; 可共存的; (因志趣等相投而) 关系好的，和睦相处的
+		/// interact with		v. 	与…相互作用
+		/// grabbed				v. 	抓住; 攫取; (试图) 抓住，夺得; 利用，抓住(机会)
+		/// pierce				v. 	扎; 刺破; 穿透; 穿过; 透入; 冲破; 突破
+		/// hassle				n. 	困难; 麻烦; 分歧; 争论; 烦恼
+		/// streamline			v. 	使成流线型; 使(系统、机构等)效率更高; (尤指) 使增产节约
+		/// drill down to		深入到 
+		/// recursively			递归地; 递归; 递归的; 递归删除; 回归
+		/// removal				n. 	移动; 调动; 去除; 除去; 消除; 清除; 免职; 解职
+		/// maintaining			v. 	维持; 保持; 维修; 保养; 坚持(意见); 固执己见
+		/// chronological		adj. 	按发生时间顺序排列的; 按时间计算的(年龄)(相对于身体、智力或情感等方面的发展而言); 
+		/// adjacent			adj. 	与…毗连的; 邻近的
+		/// galore				adj. 	大量; 很多
+		/// dare to				v. 	胆敢
 		/// </summary>
 		/// <param name="data"></param>
 		/// <returns></returns>
