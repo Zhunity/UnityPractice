@@ -15,6 +15,7 @@ namespace Unity.GPUAnimation
 {
 	/// <summary>
 	/// 存储动画片段的持续时间和编号
+	/// 存储KeyframeTextureBaker.BakeClips返回的数据
 	/// </summary>
 	public struct GPUAnimationState : IComponentData
 	{
@@ -82,11 +83,16 @@ namespace Unity.GPUAnimation
 		/// </summary>
 		public bool  Looping;
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="animTextures">width=所有动作帧数的总和 height=骨骼数</param>
+		/// <param name="clipData"></param>
 		public BakedAnimationClip(AnimationTextures animTextures, KeyframeTextureBaker.AnimationClipData clipData)
 		{
-			float onePixel = 1f / animTextures.Animation0.width;
-			float start = (float)clipData.PixelStart / animTextures.Animation0.width;
-			float end = (float)clipData.PixelEnd / animTextures.Animation0.width;
+			float onePixel = 1f / animTextures.Animation0.width;	// 倒数是什么鬼？
+			float start = (float)clipData.PixelStart / animTextures.Animation0.width;		// 开始像素在所有像素中的占比
+			float end = (float)clipData.PixelEnd / animTextures.Animation0.width;           // 结束像素在所有像素中的占比
 
 			TextureOffset = start;
 			TextureRange = end - start;
@@ -98,32 +104,48 @@ namespace Unity.GPUAnimation
 			
 			AnimationLength = clipData.Clip.length;
 			Looping = clipData.Clip.wrapMode == WrapMode.Loop;
-		}
-		
-		public float3 ComputeCoordinate(float normalizedTime)
-		{
-			float texturePosition = normalizedTime * TextureRange + TextureOffset;
-			float lowerPixelFloor = math.floor(texturePosition * TextureWidth);
+			//Debug.LogFormat("name:{0}\nTextureOffset:{1}\nTextureRange:{2}\nOnePixelOffset:{3}\nOneOverTextureWidth:{4}\nOneOverPixelOffset:{5}\nAnimationLength:{6}\nTextureWidth:{7}", 
+			//		clipData.Clip.name, TextureOffset, TextureRange,		OnePixelOffset,		OneOverTextureWidth,	 OneOverPixelOffset,	AnimationLength,	 TextureWidth);
+			//name: Walk
+			// TextureOffset:0.02857143
+			//TextureRange: 0.9428571
+			//OnePixelOffset: 0.02857143
+			//OneOverTextureWidth: 0.02857143
+			//OneOverPixelOffset:35
+			//AnimationLength:0.5333334
+			//TextureWidth: 35
 
+			// TextureOffset == OnePixelOffset == OneOverTextureWidth
 			/// QUESTION：OneOverTextureWidth和OnePixelOffset难道不是同一个东西吗？
 			/// TextureWidth = animTextures.Animation0.width;
 			/// OneOverTextureWidth = 1.0F / TextureWidth;
 			/// float onePixel = 1f / animTextures.Animation0.width;
 			/// OnePixelOffset = onePixel;
-			float lowerPixelCenter = lowerPixelFloor * OneOverTextureWidth;
-			float upperPixelCenter = lowerPixelCenter + OnePixelOffset;
+			/// 
 			/// QUESTION：TextureWidth和OneOverPixelOffset有什么区别？
 			/// TextureWidth = animTextures.Animation0.width;
 			/// float onePixel = 1f / animTextures.Animation0.width;
 			///  OnePixelOffset = onePixel;
 			///  OneOverPixelOffset = 1.0F / OnePixelOffset;
+			///  ANSWER:没区别
+		}
+
+		public float3 ComputeCoordinate(float normalizedTime)
+		{
+			float texturePosition = normalizedTime * TextureRange + TextureOffset;
+			float lowerPixelFloor = math.floor(texturePosition * TextureWidth);
+
+			
+			float lowerPixelCenter = lowerPixelFloor * OneOverTextureWidth;
+			float upperPixelCenter = lowerPixelCenter + OnePixelOffset;
+			
 			float lerpFactor = (texturePosition - lowerPixelCenter) * OneOverPixelOffset;
 
 			return  new float3(lowerPixelCenter, upperPixelCenter, lerpFactor);
 		}
 		
 		/// <summary>
-		/// 计算当前时间，获得一个比0大，比1小的百分比
+		/// 计算当前时间/动画时间，获得一个比0大，比1小的百分比
 		/// </summary>
 		/// <param name="time"></param>
 		/// <returns></returns>
