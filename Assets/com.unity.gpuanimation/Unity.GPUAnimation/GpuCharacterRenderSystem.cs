@@ -82,19 +82,20 @@ namespace Unity.GPUAnimation
 		/// <param name="clipData"></param>
 		public BakedAnimationClip(AnimationTextures animTextures, KeyframeTextureBaker.AnimationClipData clipData)
 		{
-			// QUESTION 为什么要倒数？
+			// QUESTION 为什么要倒数？ 
 			// GUESS	怕溢出？
-			float onePixel = 1f / animTextures.Animation0.width;	// 倒数是什么鬼？
-			float start = (float)clipData.PixelStart / animTextures.Animation0.width;		// 开始像素在所有像素中的占比
-			float end = (float)clipData.PixelEnd / animTextures.Animation0.width;           // 结束像素在所有像素中的占比
+			// QUESTION 还有为什么除以width，不是width*height，也不是所有像素，感觉就是为了防溢出
+			// 因为width=所有动作帧数量的总和啊，求这个占比才是有道理的
+			float start = (float)clipData.PixelStart / animTextures.Animation0.width;		// 开始像素在所有像素中的占比，即开始帧在所有帧中的百分比位置
+			float end = (float)clipData.PixelEnd / animTextures.Animation0.width;           // 结束像素在所有像素中的占比，即结束帧在所有帧中的百分比位置
 
 			TextureOffset = start;
 			TextureRange = end - start;
 			TextureWidth = animTextures.Animation0.width;
 			OneOverTextureWidth = 1.0F / TextureWidth;
-			
 			AnimationLength = clipData.Clip.length;
 			Looping = clipData.Clip.wrapMode == WrapMode.Loop;
+			#region data
 			//Debug.LogFormat("name:{0}\nTextureOffset:{1}\nTextureRange:{2}\nOnePixelOffset:{3}\nOneOverTextureWidth:{4}\nOneOverPixelOffset:{5}\nAnimationLength:{6}\nTextureWidth:{7}", 
 			//		clipData.Clip.name, TextureOffset, TextureRange,		OnePixelOffset,		OneOverTextureWidth,	 OneOverPixelOffset,	AnimationLength,	 TextureWidth);
 			//name: Walk
@@ -119,20 +120,29 @@ namespace Unity.GPUAnimation
 			///  OnePixelOffset = onePixel;
 			///  OneOverPixelOffset = 1.0F / OnePixelOffset;
 			///  ANSWER:没区别
+			///  已删除
+			///  
+			#endregion
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="normalizedTime"></param>
+		/// <returns>float3(当前时间向下取证的一帧， 向下取整一帧+1， 当前时间和第一的差)</returns>
 		public float3 ComputeCoordinate(float normalizedTime)
 		{
 			float texturePosition = normalizedTime * TextureRange + TextureOffset;
+			// QUESTION 这不是向下取整嘛？不就等于0了吗
+			// ASWNER 看清楚一点，是乘以所有帧的数量
 			float lowerPixelFloor = math.floor(texturePosition * TextureWidth);
-
 			
 			float lowerPixelCenter = lowerPixelFloor * OneOverTextureWidth;
 			float upperPixelCenter = lowerPixelCenter + OneOverTextureWidth;
 			
 			float lerpFactor = (texturePosition - lowerPixelCenter) * TextureWidth;
-
-			return  new float3(lowerPixelCenter, upperPixelCenter, lerpFactor);
+			// Debug.Log(lowerPixelCenter + "   " + upperPixelCenter + "   " + lerpFactor); 0.4857143   0.5142857   0.3135899 这时间挺短的
+			return new float3(lowerPixelCenter, upperPixelCenter, lerpFactor);
 		}
 		
 		/// <summary>
