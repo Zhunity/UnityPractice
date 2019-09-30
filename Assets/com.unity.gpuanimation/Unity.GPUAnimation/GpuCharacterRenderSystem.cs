@@ -53,6 +53,7 @@ namespace Unity.GPUAnimation
 
 		/// <summary>
 		/// 1f / animTextures.Animation0.width
+		/// 和OneOverTextureWidth一样
 		/// </summary>
 		internal float OnePixelOffset;
 
@@ -60,16 +61,19 @@ namespace Unity.GPUAnimation
 		/// animTextures.Animation0.width
 		/// Width of the texture in pixels. (Read Only)
 		/// 相对应的有个height(Height of the texture in pixels. (Read Only))
+		/// 和OneOverPixelOffset一样
 		/// </summary>
 		internal float TextureWidth;
 
 		/// <summary>
 		/// 1.0F / TextureWidth
+		/// 和OnePixelOffset一样
 		/// </summary>
 		internal float OneOverTextureWidth;
 
 		/// <summary>
 		/// 1.0F / OnePixelOffset
+		/// 和TextureWidth一样
 		/// </summary>
 		internal float OneOverPixelOffset;
 
@@ -99,6 +103,7 @@ namespace Unity.GPUAnimation
 			OnePixelOffset = onePixel;
 			TextureWidth = animTextures.Animation0.width;
 			// QUESTION 为什么要倒数？
+			// GUESS	怕溢出？
 			OneOverTextureWidth = 1.0F / TextureWidth;
 			OneOverPixelOffset = 1.0F / OnePixelOffset;
 			
@@ -115,7 +120,7 @@ namespace Unity.GPUAnimation
 			//AnimationLength:0.5333334
 			//TextureWidth: 35
 
-			// TextureOffset == OnePixelOffset == OneOverTextureWidth
+			// TextureOffset（因为这是第一个动作，碰巧一样而已） == OnePixelOffset == OneOverTextureWidth
 			/// QUESTION：OneOverTextureWidth和OnePixelOffset难道不是同一个东西吗？
 			/// TextureWidth = animTextures.Animation0.width;
 			/// OneOverTextureWidth = 1.0F / TextureWidth;
