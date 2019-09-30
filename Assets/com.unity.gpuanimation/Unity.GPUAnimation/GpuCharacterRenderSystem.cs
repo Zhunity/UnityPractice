@@ -52,12 +52,6 @@ namespace Unity.GPUAnimation
 		internal float TextureRange;
 
 		/// <summary>
-		/// 1f / animTextures.Animation0.width
-		/// 和OneOverTextureWidth一样
-		/// </summary>
-		internal float OnePixelOffset;
-
-		/// <summary>
 		/// animTextures.Animation0.width
 		/// Width of the texture in pixels. (Read Only)
 		/// 相对应的有个height(Height of the texture in pixels. (Read Only))
@@ -70,12 +64,6 @@ namespace Unity.GPUAnimation
 		/// 和OnePixelOffset一样
 		/// </summary>
 		internal float OneOverTextureWidth;
-
-		/// <summary>
-		/// 1.0F / OnePixelOffset
-		/// 和TextureWidth一样
-		/// </summary>
-		internal float OneOverPixelOffset;
 
 		/// <summary>
 		/// clipData.Clip.length
@@ -94,18 +82,16 @@ namespace Unity.GPUAnimation
 		/// <param name="clipData"></param>
 		public BakedAnimationClip(AnimationTextures animTextures, KeyframeTextureBaker.AnimationClipData clipData)
 		{
+			// QUESTION 为什么要倒数？
+			// GUESS	怕溢出？
 			float onePixel = 1f / animTextures.Animation0.width;	// 倒数是什么鬼？
 			float start = (float)clipData.PixelStart / animTextures.Animation0.width;		// 开始像素在所有像素中的占比
 			float end = (float)clipData.PixelEnd / animTextures.Animation0.width;           // 结束像素在所有像素中的占比
 
 			TextureOffset = start;
 			TextureRange = end - start;
-			OnePixelOffset = onePixel;
 			TextureWidth = animTextures.Animation0.width;
-			// QUESTION 为什么要倒数？
-			// GUESS	怕溢出？
 			OneOverTextureWidth = 1.0F / TextureWidth;
-			OneOverPixelOffset = 1.0F / OnePixelOffset;
 			
 			AnimationLength = clipData.Clip.length;
 			Looping = clipData.Clip.wrapMode == WrapMode.Loop;
@@ -142,9 +128,9 @@ namespace Unity.GPUAnimation
 
 			
 			float lowerPixelCenter = lowerPixelFloor * OneOverTextureWidth;
-			float upperPixelCenter = lowerPixelCenter + OnePixelOffset;
+			float upperPixelCenter = lowerPixelCenter + OneOverTextureWidth;
 			
-			float lerpFactor = (texturePosition - lowerPixelCenter) * OneOverPixelOffset;
+			float lerpFactor = (texturePosition - lowerPixelCenter) * TextureWidth;
 
 			return  new float3(lowerPixelCenter, upperPixelCenter, lerpFactor);
 		}
