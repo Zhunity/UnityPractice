@@ -2,7 +2,7 @@ Shader "Lightweight Render Pipeline/Skinning Lit"
 {
     Properties
     {
-		// PECULAR MAP也就是高光贴图
+		// Specular MAP也就是高光贴图
 		// Metallic 金属
         // Specular vs Metallic workflow
         [HideInInspector] _WorkflowMode("WorkflowMode", Float) = 1.0

@@ -106,6 +106,7 @@ namespace Unity.GPUAnimation
             argsBuffer.SetData(indirectArgs);
 
 			// 实现在场景中绘制制定数量的角色
+			// TODO 感觉跟Builtin没什么关系，名字有限定吗
 			DrawMeshInstancedIndirect(mesh, 0, material, new Bounds(Vector3.zero, 1000000 * Vector3.one), argsBuffer, 0, new MaterialPropertyBlock(), shadowCastingMode, receiveShadows);
         }
 

@@ -5,5 +5,5 @@ ShaderImporter:
   defaultTextures: []
   nonModifiableTextures: []
   userData: 
-  assetBundleName: smframe/plugins/com.unity.gpuanimation/shaders/builtin.ab
+  assetBundleName: com.unity.gpuanimation/shaders/builtin.ab
   assetBundleVariant: 

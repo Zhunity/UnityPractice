@@ -306,6 +306,26 @@ namespace Unity.GPUAnimation
 				m_Characters.SetFilter(character);
 
 				Profiler.BeginSample("ExtractState");
+				// QUESTION 这两个job是什么job？
+				// ANSWER 因为会报错，同时下面一个操作是通过job来实现的
+				// TODO 了解ToComponentDataArray
+				//InvalidOperationException: The previously scheduled job GatherComponentDataJob`1 writes to the NativeArray GatherComponentDataJob`1.Data.ComponentData.You must call JobHandle.Complete() on the job GatherComponentDataJob`1, before you can read from the NativeArray safely.
+				//Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle.CheckReadAndThrowNoEarlyOut(Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle handle) < 0x19c096328c0 + 0x00052 > in < c254d6bddee24edb8742cd1c78b0db19 >:0
+				//Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle.CheckReadAndThrow(Unity.Collections.LowLevel.Unsafe.AtomicSafetyHandle handle)(at C:/ buildslave / unity / build / Runtime / Export / Jobs / AtomicSafetyHandle.bindings.cs:148)
+				//Unity.Collections.LowLevel.Unsafe.NativeArrayUnsafeUtility.GetUnsafeReadOnlyPtr[T](Unity.Collections.NativeArray`1[T] nativeArray)(at C:/ buildslave / unity / build / Runtime / Export / NativeArray / NativeArray.cs:517)
+				//UnityEngine.ComputeBuffer.SetData[T](Unity.Collections.NativeArray`1[T] data, System.Int32 nativeBufferStartIndex, System.Int32 computeBufferStartIndex, System.Int32 count)(at C:/ buildslave / unity / build / Runtime / Export / Shaders / ComputeShader.bindings.cs:202)
+				//Unity.GPUAnimation.InstancedSkinningDrawer.Draw(Unity.Collections.NativeArray`1[T] TextureCoordinates, Unity.Collections.NativeArray`1[T] ObjectToWorld, UnityEngine.Rendering.ShadowCastingMode shadowCastingMode, System.Boolean receiveShadows)(at Assets / com.unity.gpuanimation / Unity.GPUAnimation / InstancedSkinningDrawer.cs:97)
+				//Unity.GPUAnimation.GpuCharacterRenderSystem.OnUpdate(Unity.Jobs.JobHandle inputDeps)(at Assets / com.unity.gpuanimation / Unity.GPUAnimation / GpuCharacterRenderSystem.cs:318)
+				//Unity.Entities.JobComponentSystem.InternalUpdate()(at Library / PackageCache / com.unity.entities@0.1.1 - preview / Unity.Entities / ComponentSystem.cs:933)
+				//Unity.Entities.ComponentSystemBase.Update()(at Library / PackageCache / com.unity.entities@0.1.1 - preview / Unity.Entities / ComponentSystem.cs:284)
+				//Unity.Entities.ComponentSystemGroup.OnUpdate()(at Library / PackageCache / com.unity.entities@0.1.1 - preview / Unity.Entities / ComponentSystemGroup.cs:602)
+				//UnityEngine.Debug:LogException(Exception)
+				//Unity.Debug:LogException(Exception)(at Library / PackageCache / com.unity.entities@0.1.1 - preview / Unity.Entities / Stubs / Unity / Debug.cs:25)
+				//Unity.Entities.ComponentSystemGroup:OnUpdate()(at Library / PackageCache / com.unity.entities@0.1.1 - preview / Unity.Entities / ComponentSystemGroup.cs:606)
+				//Unity.Entities.ComponentSystem:InternalUpdate()(at Library / PackageCache / com.unity.entities@0.1.1 - preview / Unity.Entities / ComponentSystem.cs:800)
+				//Unity.Entities.ComponentSystemBase:Update()(at Library / PackageCache / com.unity.entities@0.1.1 - preview / Unity.Entities / ComponentSystem.cs:284)
+				//Unity.Entities.DummyDelegateWrapper:TriggerUpdate()(at Library / PackageCache / com.unity.entities@0.1.1 - preview / Unity.Entities / ScriptBehaviourUpdateOrder.cs:144)
+
 				JobHandle jobA, jobB;
 				// 传输坐标和LocalToWorld矩阵
 		        var coords = m_Characters.ToComponentDataArray<AnimationTextureCoordinate>(Allocator.TempJob, out jobA);

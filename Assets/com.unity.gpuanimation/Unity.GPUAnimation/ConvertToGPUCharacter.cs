@@ -47,6 +47,7 @@ namespace Unity.GPUAnimation
 		/// Quoted				v. 	引用; 引述; 举例说明; 开价; 出价; 报价
 		/// prior				adj. 	先前的; 较早的; 在前的; 优先的; 占先的; 较重要的; 在前面的
 		/// http://gametorrahod.com/designing-an-efficient-system-with-version-numbers/
+		/// TODO 还需要继续了解
 		/// </summary>
 		/// <param name="data"></param>
 		/// <returns></returns>

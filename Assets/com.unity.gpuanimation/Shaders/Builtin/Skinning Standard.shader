@@ -1,4 +1,5 @@
 // Unity built-in shader source. Copyright (c) 2016 Unity Technologies. MIT license (see license.txt)
+// TODO built-in shader 好像表示unity内部shader，这个有什么意义？
 
 Shader "Skinning Standard"
 {
