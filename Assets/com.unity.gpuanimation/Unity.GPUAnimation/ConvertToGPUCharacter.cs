@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Unity.GPUAnimation
 {
+	/// <summary>
+	/// TODO 继续保留还是放到ConvertToGPUCharacter里？
+	/// </summary>
 	public static class CharacterUtility
 	{
 		/// <summary>

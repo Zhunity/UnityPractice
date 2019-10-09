@@ -86,8 +86,12 @@ namespace Unity.GPUAnimation
 			// Instantiate the character, but make sure it's inactive so it doesn't trigger any unexpected systems. 
 			var wasActive = animationRoot.activeSelf;
 			animationRoot.SetActive(false);
-			// TODO 感觉这里应该是不需要再实例化的，程序加载模型的时候已经完成了
-			var instance = GameObject.Instantiate(animationRoot, Vector3.zero, Quaternion.identity);
+			// TODO 感觉是不是可以再Asset阶段完成？
+			// QUESTION 为什么ConvertToEntity删掉GameObject会报错，而instance最后被删掉就不会报错？
+			// MissingReferenceException: The object of type 'SkinnedMeshRenderer' has been destroyed but you are still trying to access it.
+			// ANSWER 因为最下面有删除的代码，所以就错了，不过用这个是没有问题的，不过注意位置不能有偏移，大小应该也要注意
+			var instance = animationRoot;// GameObject.Instantiate(animationRoot, Vector3.zero, Quaternion.identity);
+			//var instance = GameObject.Instantiate(animationRoot, Vector3.zero, Quaternion.identity);
 			animationRoot.SetActive(wasActive);
 			
 			instance.transform.localScale = Vector3.one;
@@ -303,7 +307,7 @@ namespace Unity.GPUAnimation
 				bakedData.AnimationsDictionary[clipData.Clip.name] = clipData;
 			}
 			
-			GameObject.DestroyImmediate(instance);
+			//GameObject.DestroyImmediate(instance);
 
 			return bakedData;
 		}
