@@ -64,11 +64,9 @@ namespace Unity.GPUAnimation
 			public int PixelEnd;
 		}
 
-		private static Dictionary<string, BakedData> _cache = new Dictionary<string, BakedData>();
-
-		static int i = 0;
 		/// <summary>
 		/// IMPORTENT！！！
+		/// 感觉这里做数据缓存没意义，可以参考SpawnerAuthoring_FromEntity
 		/// </summary>
 		/// <param name="animationRoot">动画根对象</param>
 		/// <param name="animationClips">动画片段数组</param>
@@ -77,13 +75,6 @@ namespace Unity.GPUAnimation
 		/// <returns></returns>
 		public static BakedData BakeClips(GameObject animationRoot, AnimationClip[] animationClips, float framerate, LodData lods)
 		{
-			BakedData bakedData;
-			if(_cache.TryGetValue(animationRoot.name, out bakedData))
-			{
-				Debug.Log(i++);
-				return bakedData;
-			}
-
 			//首先获取动画根对象子对象的SkinMeshRenderer
 			var skinRenderers = animationRoot.GetComponentsInChildren<SkinnedMeshRenderer>();
 			if (skinRenderers.Length != 1)
@@ -107,7 +98,7 @@ namespace Unity.GPUAnimation
 			instance.transform.localScale = Vector3.one;
 			var skinRenderer = instance.GetComponentInChildren<SkinnedMeshRenderer>();
 
-			bakedData = new BakedData();
+			BakedData bakedData = new BakedData();
 			bakedData.NewMesh = CreateMesh(skinRenderer);               // 利用这个skinRenderer作为CreateMesh方法的参数，生成BakedData的NewMesh
 			// BakedData的LodData结构体中的mesh成员也使用CreateMesh生成，只不过需要的第二个参数是输入lod的mesh成员
 			var lod1Mesh = CreateMesh(skinRenderer, lods.Lod1Mesh);	
@@ -316,9 +307,8 @@ namespace Unity.GPUAnimation
 			{
 				bakedData.AnimationsDictionary[clipData.Clip.name] = clipData;
 			}
-
+			
 			//GameObject.DestroyImmediate(instance);
-			_cache[animationRoot.name] = bakedData;
 
 			return bakedData;
 		}
