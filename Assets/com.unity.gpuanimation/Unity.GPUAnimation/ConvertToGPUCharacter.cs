@@ -1,6 +1,7 @@
 using Unity.Collections;
 using Unity.Entities;
 using UnityEngine;
+using SMFrame;
 
 namespace Unity.GPUAnimation
 {
@@ -114,12 +115,12 @@ namespace Unity.GPUAnimation
 			manager.AddSharedComponentData(entity, renderCharacter);
 		}
 	}
-    public class ConvertToGPUCharacter : MonoBehaviour, IConvertGameObjectToEntity
-    {
+    public class ConvertToGPUCharacter : GameObjectToEntityConversion
+	{
 		public AnimationClip[] Clips;
 		public float Framerate = 60.0F;
 		
-        public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
+        protected override void OnConvert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
         {
             CharacterUtility.AddCharacterComponents(dstManager, entity, gameObject, Clips, Framerate);
         }
