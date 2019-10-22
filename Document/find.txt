@@ -1,0 +1,20 @@
+ string path = AssetDatabase.GetAssetPath(Selection.activeObject);
+
+        GameObject parent = GameObject.Find("Model");
+        if (parent != null) {
+            Object.DestroyImmediate(parent);
+        }
+
+        parent = new GameObject("Model");
+        parent.transform.position = Vector3.zero;
+
+        List<GameObject> list = new List<GameObject>();
+        EditorUtil.Walk(path, ".fbx", (item) =>
+        {
+            GameObject prefab = AssetDatabase.LoadAssetAtPath(item, typeof (GameObject)) as GameObject;
+            if (prefab != null) {
+                GameObject go = Object.Instantiate(prefab);
+                go.transform.SetParent(parent.transform);
+                list.Add(go);
+            }
+        });
