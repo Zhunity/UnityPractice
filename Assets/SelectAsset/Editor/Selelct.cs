@@ -8,6 +8,7 @@ using System.Linq;
 
 public class Selelct
 {
+	// https://blog.csdn.net/w87580575/article/details/81061415
 	[MenuItem("Assets/Select", false, 10)]
 	public static void SelectAssets()
 	{
