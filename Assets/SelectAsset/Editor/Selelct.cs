@@ -5,6 +5,7 @@ using UnityEditor;
 using System;
 using System.IO;
 using System.Linq;
+using Object = UnityEngine.Object;
 
 public class Selelct
 {
@@ -12,16 +13,44 @@ public class Selelct
 	[MenuItem("Assets/Select", false, 10)]
 	public static void SelectAssets()
 	{
-		var prefabs = Selection.gameObjects;
-		for (int i = 0; i < prefabs.Length; i++)
+		TraverseSelection();
+	}
+
+	/// <summary>
+	/// 遍历选中的对象
+	/// </summary>
+	public static void TraverseSelection()
+	{
+		// Selection.activeObject Selection.objects Selection.gameObjects 区别
+		var objects = Selection.objects;
+		for (int i = 0; i < objects.Length; i++)
 		{
-			Debug.Log("select", prefabs[i]);
+			
+			
+			TraverseDirectory(objects[i], "*.*", (item) =>
+			{
+				GameObject prefab = AssetDatabase.LoadAssetAtPath(item, typeof(GameObject)) as GameObject;
+				if (prefab != null)
+				{
+					Debug.Log(item, prefab);
+				}
+			});
 		}
 	}
 
-	// 遍历所选目录或文件，递归
-	public static void Walk(string path, string exts, Action<string> callback)
+	/// <summary>
+	/// 遍历所选目录或文件，递归
+	/// </summary>
+	/// <param name="path"></param>
+	/// <param name="exts"></param>
+	/// <param name="callback"></param>
+	public static void TraverseDirectory(Object obj, string exts, Action<string> callback)
 	{
+		if(obj == null)
+		{
+			return;
+		}
+		string path = AssetDatabase.GetAssetPath(obj);
 		if (exts == null) exts = "";
 		bool isAll = string.IsNullOrEmpty(exts) || exts == "*" || exts == "*.*";
 		string[] extList = exts.Replace("*", "").Split('|');
@@ -66,4 +95,34 @@ public class Selelct
 			}
 		}
 	}
+
+	/// <summary>
+	/// 遍历GameObject下的子节点
+	/// </summary>
+	public static void TraverseChildren()
+	{
+
+	}
+
+	/* 可以这么整
+	 * Object[] selects = Selection.GetFiltered(typeof(Object), SelectionMode.DeepAssets);
+        int count = 0;
+        foreach (Object selected in selects)
+        {
+            string path = AssetDatabase.GetAssetPath(selected);
+            //Debug.Log(path);
+            AssetImporter asset = AssetImporter.GetAtPath(path);
+            string bundleName = GetAssetBundleName(path);
+            if (bundleName == string.Empty)
+            {
+                continue;
+            }
+            count += 1;
+            asset.assetBundleName = bundleName;
+            asset.assetBundleVariant = extension;
+            asset.SaveAndReimport();
+        }
+        Debug.Log("目录包含资源:" + count + "个");
+        AssetDatabase.Refresh();
+	*/
 }
