@@ -29,7 +29,7 @@ public class Selelct
 			
 			TraverseDirectory(objects[i], "*.*", (item) =>
 			{
-				GameObject prefab = AssetDatabase.LoadAssetAtPath(item, typeof(GameObject)) as GameObject;
+				Object prefab = AssetDatabase.LoadAssetAtPath(item, typeof(Object));
 				if (prefab != null)
 				{
 					Debug.Log(item, prefab);
