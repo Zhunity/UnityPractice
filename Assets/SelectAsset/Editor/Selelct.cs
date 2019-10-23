@@ -13,7 +13,20 @@ public class Selelct
 	[MenuItem("Assets/Select", false, 10)]
 	public static void SelectAssets()
 	{
-		TraverseSelection();
+		SimpleSelect();
+	}
+
+	/// <summary>
+	/// unity自带遍历接口
+	/// </summary>
+	public static void SimpleSelect()
+	{
+		Object[] selects = Selection.GetFiltered(typeof(Object), SelectionMode.DeepAssets);
+		foreach (Object selected in selects)
+		{
+			string path = AssetDatabase.GetAssetPath(selected);
+			Debug.Log(path, selected);
+		}
 	}
 
 	/// <summary>
@@ -25,8 +38,6 @@ public class Selelct
 		var objects = Selection.objects;
 		for (int i = 0; i < objects.Length; i++)
 		{
-			
-			
 			TraverseDirectory(objects[i], "*.*", (item) =>
 			{
 				Object prefab = AssetDatabase.LoadAssetAtPath(item, typeof(Object));
@@ -103,26 +114,4 @@ public class Selelct
 	{
 
 	}
-
-	/* 可以这么整
-	 * Object[] selects = Selection.GetFiltered(typeof(Object), SelectionMode.DeepAssets);
-        int count = 0;
-        foreach (Object selected in selects)
-        {
-            string path = AssetDatabase.GetAssetPath(selected);
-            //Debug.Log(path);
-            AssetImporter asset = AssetImporter.GetAtPath(path);
-            string bundleName = GetAssetBundleName(path);
-            if (bundleName == string.Empty)
-            {
-                continue;
-            }
-            count += 1;
-            asset.assetBundleName = bundleName;
-            asset.assetBundleVariant = extension;
-            asset.SaveAndReimport();
-        }
-        Debug.Log("目录包含资源:" + count + "个");
-        AssetDatabase.Refresh();
-	*/
 }
