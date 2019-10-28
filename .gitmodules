@@ -7,3 +7,6 @@
 [submodule "Document/UI"]
 	path = Document/UI
 	url =https://bitbucket.org/Unity-Technologies/ui
+[submodule "Document/UnityCsReference"]
+	path = Document/UnityCsReference
+	url = https://github.com/Unity-Technologies/UnityCsReference.git
