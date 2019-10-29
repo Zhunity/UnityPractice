@@ -18,7 +18,8 @@ public class OnAddComponent :MonoBehaviour
 #if UNITY_EDITOR
 	private void Awake()
 	{
-		Debug.Log("1111111111");
+		DestroyOnPlay();
+		Debug.Log("EditorAwake");
 		// 这个会在GameObject Apply时自动调用
 		// 好像只会更新自己的GameObject
 		PrefabUtility.prefabInstanceUpdated += Apply;
@@ -41,15 +42,11 @@ public class OnAddComponent :MonoBehaviour
 
 	private void EditorUpdate()
 	{
-		if(Application.isPlaying)
-		{
-			DestroyImmediate(gameObject);
-			return;
-		}
-		Debug.Log("Update");
-		//var list = PrefabUtility.GetAddedComponents(gameObject);
-		//foreach (var item in list)
-		//	Debug.Log(item);
+		DestroyOnPlay();
+		Debug.LogWarning("update");
+		var list = PrefabUtility.GetAddedComponents(Selection.activeGameObject);
+		foreach (var item in list)
+			Debug.Log(item);
 	}
 
 	private void OnDestroy()
@@ -58,6 +55,15 @@ public class OnAddComponent :MonoBehaviour
 		PrefabUtility.prefabInstanceUpdated -= Apply;
 
 		EditorApplication.update -= EditorUpdate;
+	}
+
+	private void DestroyOnPlay()
+	{
+		if (Application.isPlaying)
+		{
+			DestroyImmediate(gameObject);
+			return;
+		}
 	}
 #endif
 
