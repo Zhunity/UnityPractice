@@ -1,15 +1,49 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor.SceneManagement;
+using UnityEditor;
 
-public class OnAddComponent : UnityEditor.SceneManagement.AddedComponent
+public class OnAddComponent :MonoBehaviour
 {
 
-	public int a = 1;
 #if UNITY_EDITOR
-	public override void Apply(string prefabAssetPath)
+	private void Reset()
 	{
-		Debug.Log("111111111111111 " + prefabAssetPath + "  " + instanceComponent);
+		Debug.Log("1111111111");
+		// 这个会在GameObject Apply时自动调用
+		// 好像只会更新自己的GameObject
+		PrefabUtility.prefabInstanceUpdated += Apply;
+
+		EditorApplication.update += EditorUpdate;
+	}
+
+	/// <summary>
+	/// PrefabUtility.prefabInstanceUpdated
+	/// 这个会在GameObject Apply时自动调用
+	/// 好像只会更新自己的GameObject
+	/// </summary>
+	/// <param name="go"></param>
+	private void Apply(GameObject go)
+	{
+		Debug.Log("updated ", go);
+		PrefabUtility.GetAddedComponents(gameObject);
+	}
+
+	private void EditorUpdate()
+	{
+		var list = PrefabUtility.GetAddedComponents(gameObject);
+		foreach (var item in list)
+			Debug.Log(item);
+	}
+
+	private void OnDestroy()
+	{
+		PrefabUtility.prefabInstanceUpdated -= Apply;
+
+		EditorApplication.update -= EditorUpdate;
 	}
 #endif
+
+
 }
