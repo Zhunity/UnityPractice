@@ -1,0 +1,46 @@
+TextureImporter
+1、textureType
+    a.TextureImporterType.NormalMap 发现贴图
+2、SetiPhoneSetting()
+3、mipmapEnabled mipmap是否开启
+4、FixMaxSizeByStandalone()
+5、FixTextureSize()
+6、isReadable
+7、spritePackingTag 图集
+8、textureCompression 压缩格式
+9、alphaIsTransparency alphaSource 透明
+10、SetAndroidSetting() 安卓压缩格式
+11、SetStandaloneSetting() win端压缩格式
+12、ClearPlatformTextureSettings()
+13、spriteImportMode TODO 什么东西
+14、wrapMode
+15、SetAutoCompression()
+
+
+
+
+TOOD
+SetAutoCompression()    根据不同平台选择压缩格式
+SetAndroidSetting() 强制指定android平台下的压缩格式
+SetiPhoneSetting()  强制指定ios平台下的压缩格式
+SetStandaloneSetting()  强制指定Windows平台下的压缩格式
+
+TextureImporterFormat  纹理压缩格式？
+TextureImporterPlatformSettings 是什么？
+    name
+    overridden
+    crunchedCompression
+    textureCompression
+    compressionQuality
+    format  就是上面的TextureImporterFormat
+    allowsAlphaSplitting
+    maxTextureSize
+    SetPlatformTextureSettings()
+    
+
+
+FixTextureSize()     限制纹理的最大尺寸 不是很懂
+
+FixMaxSizeByStandalone()
+
+ClearPlatformTextureSettings()
