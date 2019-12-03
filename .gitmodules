@@ -10,3 +10,7 @@
 [submodule "Document/UnityCsReference"]
 	path = Document/UnityCsReference
 	url = https://github.com/Unity-Technologies/UnityCsReference.git
+
+[submodule "Assets/SubjectPractice"]
+	path = Assets/SubjectPractice
+	url = https://github.com/Hgithubcao/SubjectPractice.git
