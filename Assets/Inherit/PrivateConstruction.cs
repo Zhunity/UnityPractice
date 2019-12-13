@@ -4,39 +4,47 @@ using UnityEngine;
 
 public class PrivateParent
 {
-	// 3、把private 改成public也看不到
-	//5、子类构造函数没写，改成public也不会有打印
-	public PrivateParent()
+	//2、private改成protected之后，可以在子类访问了，但是子类的构造函数公开性无所谓
+	protected PrivateParent()
 	{
 		Debug.Log("PrivateParent");
 	}
 
 }
 
-
-public class PublicChild
+// 4、private PrivateParent()时，看起来不可以被继承，因为调用不了父类的构造函数
+public class PublicChild : PrivateParent
 {
-	// 4、把自己的注释了，private父类构造函数也不会打印
-	//public PublicChild()
-	//{
-	//	Debug.Log("PublicChild");
-	//}
+	// 1、private PrivateParent()时，提示构造函数有问题，PrivateParent.PrivateParent不可访问
+	// 6、理所当然的会调用父类的构造函数
+	public PublicChild()
+	{
+		Debug.Log("PublicChild");
+	}
 
-	//public PublicChild(int num) : base()
-	//{
-	//	Debug.Log("PublicChild call PrivateParent");
-	//}
+	public PublicChild(int num) : base()
+	{
+		Debug.Log("PublicChild call PrivateParent");
+	}
+
+	protected PublicChild(string str)
+	{
+		Debug.Log("PublicChild call str");
+	}
 }
 
 public class PrivateConstruction : MonoBehaviour
 {
     void Start()
     {
-		// 1、这样只会调用PublicChild的构造函数，不会调用PrivateParent的构造函数
 		PublicChild child1 = new PublicChild();
 
-		// 2、这样也看不到
 		//PublicChild child2 = new PublicChild(1);
 
+		// 3、protected构造函数不可访问
+		//PrivateParent parent = new PrivateParent();
+
+		// 5、不可以在类外面创建protected构造函数的类
+		//PublicChild child2 = new PublicChild("");
 	}
 }
