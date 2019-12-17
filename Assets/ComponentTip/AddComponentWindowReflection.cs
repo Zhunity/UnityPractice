@@ -26,14 +26,18 @@ public class Hello
 public class AddComponentWindowReflection : MonoBehaviour
 {
 #if UNITY_EDITOR
-	static Type window = NativeCodeReader.Instance.GetType("Hello");
+	static Type window = NativeCodeReader.Instance.GetType("AddComponentWindow");
 	static EventInfo selectionChanged = window.GetEvent("selectionChanged");
 	static EventInfo windowClosed = window.GetEvent("windowClosed");
 
 	private void Awake()
 	{
 		object item = Activator.CreateInstance(window);
-		windowClosed.AddEventHandler(item, Delegate.CreateDelegate(typeof(Action<int>), this, "WindowClosed"));
+		Type t = this.GetType();
+		var method = t.GetMethod("WindowClosed");
+		Debug.Log(t + "  " + method);
+		method.MakeGenericMethod(typeof(int));
+		windowClosed.AddEventHandler(item, method.CreateDelegate(windowClosed.EventHandlerType, this));
 		DestroyOnPlay();
 		Debug.Log("EditorAwake");
 		// 这个会在GameObject Apply时自动调用
@@ -68,10 +72,11 @@ public class AddComponentWindowReflection : MonoBehaviour
 		//		return;
 		//	}
 		//	first = true;
-		//	Debug.Log(windowClosed + "\n" + windowClosed.EventHandlerType);
+		//	Debug.Log(windowClosed + "\n" + windowClosed.EventHandlerType + "\n" + windowClosed.GetAddMethod());
+		//	Debug.Log(selectionChanged + "\n" + selectionChanged.EventHandlerType + selectionChanged.GetAddMethod());
 		//	foreach (var item in windows)
 		//	{
-		//		windowClosed.AddEventHandler(item, Delegate.CreateDelegate(windowClosed.EventHandlerType, this, "WindowClosed"));
+		//		//windowClosed.AddEventHandler(item, Delegate.CreateDelegate(windowClosed.EventHandlerType, this, "WindowClosed"));
 		//		//selectionChanged.AddEventHandler(item, a);
 		//		//parameters = new object[] { parameters };
 		//		//return mi.Invoke(objClass, parameters);
@@ -80,7 +85,7 @@ public class AddComponentWindowReflection : MonoBehaviour
 		//}
 	}
 
-	void WindowClosed(params object[] obj)
+	public void WindowClosed<T>(T para)
 	{
 		Debug.LogError("WindowClosed");
 		first = false;
