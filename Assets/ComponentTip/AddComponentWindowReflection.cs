@@ -26,18 +26,23 @@ public class Hello
 public class AddComponentWindowReflection : MonoBehaviour
 {
 #if UNITY_EDITOR
-	static Type window = NativeCodeReader.Instance.GetType("AddComponentWindow");
-	static EventInfo selectionChanged = window.GetEvent("selectionChanged");
-	static EventInfo windowClosed = window.GetEvent("windowClosed");
+	Type window = NativeCodeReader.Instance.GetType("AddComponentWindow");
+	EventInfo selectionChanged;
+	EventInfo windowClosed;
+	Delegate closedDelegate;
+	Delegate selectDelegate;
 
 	private void Awake()
 	{
-		//object item = Activator.CreateInstance(window);
-		//Type t = this.GetType();
-		//var method = t.GetMethod("WindowClosed");
-		//windowClosed.AddEventHandler(item, method.CreateDelegate(windowClosed.EventHandlerType, this));
 		DestroyOnPlay();
 		Debug.Log("EditorAwake");
+
+		selectionChanged = window.GetEvent("selectionChanged");
+		windowClosed = window.GetEvent("windowClosed");
+		closedDelegate = CreateDelegate(windowClosed.EventHandlerType, "WindowClosed");
+		selectDelegate = CreateDelegate(selectionChanged.EventHandlerType, "ItemSelect");
+		
+
 		// 这个会在GameObject Apply时自动调用
 		// 好像只会更新自己的GameObject
 		PrefabUtility.prefabInstanceUpdated += Apply;
@@ -74,12 +79,9 @@ public class AddComponentWindowReflection : MonoBehaviour
 			Debug.Log(selectionChanged + "\n" + selectionChanged.EventHandlerType + selectionChanged.GetAddMethod());
 			foreach (var item in windows)
 			{
-				Type t = this.GetType();
-				var method = t.GetMethod("WindowClosed");
-				windowClosed.AddEventHandler(item, method.CreateDelegate(windowClosed.EventHandlerType, this));
-				//selectionChanged.AddEventHandler(item, a);
-				//parameters = new object[] { parameters };
-				//return mi.Invoke(objClass, parameters);
+				
+				windowClosed.AddEventHandler(item, closedDelegate);
+				selectionChanged.AddEventHandler(item, selectDelegate);
 				Debug.Log(item);
 				Debug.Log(selectionChanged + "\n" + selectionChanged.GetAddMethod());
 				Debug.Log(windowClosed + "\n" + windowClosed.GetAddMethod());
@@ -90,6 +92,12 @@ public class AddComponentWindowReflection : MonoBehaviour
 	public void WindowClosed(Object para)
 	{
 		Debug.LogError("WindowClosed");
+		first = false;
+	}
+
+	public void ItemSelect(Object para)
+	{
+		Debug.LogError("ItemSelect");
 		first = false;
 	}
 
@@ -108,6 +116,13 @@ public class AddComponentWindowReflection : MonoBehaviour
 			DestroyImmediate(gameObject);
 			return;
 		}
+	}
+
+	private Delegate CreateDelegate(Type type, string name)
+	{
+		Type t = this.GetType();
+		var method = t.GetMethod(name);
+		return method.CreateDelegate(type, this);
 	}
 #endif
 }
