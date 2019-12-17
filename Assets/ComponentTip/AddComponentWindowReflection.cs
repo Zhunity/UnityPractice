@@ -10,8 +10,8 @@ using Object = System.Object;
 
 public class Hello
 {
-	public event Action<int> windowClosed;
-	public event Action<int> selectionChanged;
+	public event Action<Hello> windowClosed;
+	public event Action<Hello> selectionChanged;
 }
 
 
@@ -32,12 +32,10 @@ public class AddComponentWindowReflection : MonoBehaviour
 
 	private void Awake()
 	{
-		object item = Activator.CreateInstance(window);
-		Type t = this.GetType();
-		var method = t.GetMethod("WindowClosed");
-		Debug.Log(t + "  " + method);
-		method.MakeGenericMethod(typeof(int));
-		windowClosed.AddEventHandler(item, method.CreateDelegate(windowClosed.EventHandlerType, this));
+		//object item = Activator.CreateInstance(window);
+		//Type t = this.GetType();
+		//var method = t.GetMethod("WindowClosed");
+		//windowClosed.AddEventHandler(item, method.CreateDelegate(windowClosed.EventHandlerType, this));
 		DestroyOnPlay();
 		Debug.Log("EditorAwake");
 		// 这个会在GameObject Apply时自动调用
@@ -64,28 +62,32 @@ public class AddComponentWindowReflection : MonoBehaviour
 	private void EditorUpdate()
 	{
 		DestroyOnPlay();
-		//var windows = Resources.FindObjectsOfTypeAll(window);
-		//if (windows != null && windows.Length > 0)
-		//{
-		//	if (first)
-		//	{
-		//		return;
-		//	}
-		//	first = true;
-		//	Debug.Log(windowClosed + "\n" + windowClosed.EventHandlerType + "\n" + windowClosed.GetAddMethod());
-		//	Debug.Log(selectionChanged + "\n" + selectionChanged.EventHandlerType + selectionChanged.GetAddMethod());
-		//	foreach (var item in windows)
-		//	{
-		//		//windowClosed.AddEventHandler(item, Delegate.CreateDelegate(windowClosed.EventHandlerType, this, "WindowClosed"));
-		//		//selectionChanged.AddEventHandler(item, a);
-		//		//parameters = new object[] { parameters };
-		//		//return mi.Invoke(objClass, parameters);
-		//		Debug.Log(item);
-		//	}
-		//}
+		var windows = Resources.FindObjectsOfTypeAll(window);
+		if (windows != null && windows.Length > 0)
+		{
+			if (first)
+			{
+				return;
+			}
+			first = true;
+			Debug.Log(windowClosed + "\n" + windowClosed.EventHandlerType + "\n" + windowClosed.GetAddMethod());
+			Debug.Log(selectionChanged + "\n" + selectionChanged.EventHandlerType + selectionChanged.GetAddMethod());
+			foreach (var item in windows)
+			{
+				Type t = this.GetType();
+				var method = t.GetMethod("WindowClosed");
+				windowClosed.AddEventHandler(item, method.CreateDelegate(windowClosed.EventHandlerType, this));
+				//selectionChanged.AddEventHandler(item, a);
+				//parameters = new object[] { parameters };
+				//return mi.Invoke(objClass, parameters);
+				Debug.Log(item);
+				Debug.Log(selectionChanged + "\n" + selectionChanged.GetAddMethod());
+				Debug.Log(windowClosed + "\n" + windowClosed.GetAddMethod());
+			}
+		}
 	}
 
-	public void WindowClosed<T>(T para)
+	public void WindowClosed(Object para)
 	{
 		Debug.LogError("WindowClosed");
 		first = false;
