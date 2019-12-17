@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor.SceneManagement;
 using UnityEditor;
-using SMFrame;
-using System;
 
 // The PrintAwake script is placed on a GameObject.  The Awake function is
 // called when the GameObject is started at runtime.  The script is also
@@ -13,15 +11,6 @@ using System;
 // The Update() function is called, for example, when the GameObject transform
 // position is changed in the Editor.
 // https://docs.unity3d.com/ScriptReference/ExecuteInEditMode.html?_ga=2.214190871.1842191051.1572255433-604024978.1568602930
-
-
-/// <summary>
-/// InspectorWindow.AddComponentButton打开选择Component下拉框
-/// UnityResourceReference AddComponentGUI是添加代码用的
-/// AddComponentWindow.Show 打开
-/// AddComponentWindow.OnItemSelected 目测时这个选中
-/// AddComponentWindow.
-/// </summary>
 [ExecuteInEditMode]
 public class OnAddComponent :MonoBehaviour
 {
@@ -51,24 +40,13 @@ public class OnAddComponent :MonoBehaviour
 		//PrefabUtility.GetAddedComponents(gameObject);
 	}
 
-	private bool first = false;
 	private void EditorUpdate()
 	{
 		DestroyOnPlay();
-		Type window = NativeCodeReader.Instance.GetType("AddComponentWindow");
-		var windows = Resources.FindObjectsOfTypeAll(window);
-		if(windows != null && windows.Length > 0)
-		{
-			if(!first)
-			{
-				return;
-			}
-			first = true;
-			foreach (var item in windows)
-			{
-				Debug.Log(item);
-			}
-		}
+		Debug.LogWarning("update");
+		var list = PrefabUtility.GetAddedComponents(Selection.activeGameObject);
+		foreach (var item in list)
+			Debug.Log(item);
 	}
 
 	private void OnDestroy()
