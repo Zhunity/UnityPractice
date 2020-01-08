@@ -341,7 +341,7 @@ namespace Unity.GPUAnimation
 			Mesh newMesh = new Mesh();
 			Mesh originalMesh = mesh == null ? originalRenderer.sharedMesh : mesh;
 
-			originalMesh.CopyMeshData(newMesh);
+			//originalMesh.CopyMeshData(newMesh);
 
 			Vector3[] vertices = originalMesh.vertices;
 			Vector2[] boneIds = new Vector2[originalMesh.vertexCount];			// 骨骼id，骨骼数量=顶点数量？ 猜测是boneweight里面的index？

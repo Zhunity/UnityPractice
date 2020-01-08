@@ -334,7 +334,7 @@ namespace Unity.GPUAnimation
 		        Profiler.EndSample();
 		        
 				// 调用Draw()方法
-		        drawer.Draw(coords.Reinterpret_Temp<AnimationTextureCoordinate, float3>(), localToWorld.Reinterpret_Temp<LocalToWorld, float4x4>(), character.CastShadows, character.ReceiveShadows);
+		        //drawer.Draw(coords.Reinterpret_Temp<AnimationTextureCoordinate, float3>(), localToWorld.Reinterpret_Temp<LocalToWorld, float4x4>(), character.CastShadows, character.ReceiveShadows);
 		        
 		        coords.Dispose();
 		        localToWorld.Dispose();
