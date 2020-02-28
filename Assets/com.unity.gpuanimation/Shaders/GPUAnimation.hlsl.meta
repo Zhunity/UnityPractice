@@ -1,9 +1,9 @@
 fileFormatVersion: 2
-guid: e795de6ac0b0a4155a77af697ec7d810
+guid: b0f8a517c98382541a27571f13b07eb5
 ShaderImporter:
   externalObjects: {}
   defaultTextures: []
   nonModifiableTextures: []
   userData: 
-  assetBundleName: smframe/plugins/com.unity.gpuanimation/shaders.ab
+  assetBundleName: com.unity.gpuanimation/shaders.ab
   assetBundleVariant: 

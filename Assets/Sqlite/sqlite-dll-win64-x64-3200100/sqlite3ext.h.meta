@@ -9,6 +9,7 @@ PluginImporter:
   isPreloaded: 0
   isOverridable: 0
   isExplicitlyReferenced: 0
+  validateReferences: 1
   platformData:
   - first:
       Any: 
@@ -22,5 +23,5 @@ PluginImporter:
       settings:
         DefaultValueInitialized: true
   userData: 
-  assetBundleName: 
+  assetBundleName: sqlite/sqlite-dll-win64-x64-3200100.ab
   assetBundleVariant: 

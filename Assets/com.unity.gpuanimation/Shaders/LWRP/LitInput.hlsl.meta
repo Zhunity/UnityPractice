@@ -1,9 +1,9 @@
 fileFormatVersion: 2
-guid: 430ef952b31544c6699a1070486c658f
+guid: 44b23dda8710f074bbf9668be3108ce9
 ShaderImporter:
   externalObjects: {}
   defaultTextures: []
   nonModifiableTextures: []
   userData: 
-  assetBundleName: smframe/plugins/com.unity.gpuanimation/shaders/lwrp.ab
+  assetBundleName: com.unity.gpuanimation/shaders/lwrp.ab
   assetBundleVariant: 
