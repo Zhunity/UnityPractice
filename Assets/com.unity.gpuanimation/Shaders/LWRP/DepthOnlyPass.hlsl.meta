@@ -1,9 +1,0 @@
-fileFormatVersion: 2
-guid: 4d52d048219303946a1b7c6281966bc3
-ShaderImporter:
-  externalObjects: {}
-  defaultTextures: []
-  nonModifiableTextures: []
-  userData: 
-  assetBundleName: com.unity.gpuanimation/shaders/lwrp.ab
-  assetBundleVariant: 
