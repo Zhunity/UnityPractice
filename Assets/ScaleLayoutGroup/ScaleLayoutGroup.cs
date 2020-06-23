@@ -54,6 +54,14 @@ public class ScaleLayoutGroup : LayoutGroup
 		}
 	}
 
+	/// <summary>
+	/// 计算左下角和右上角到边缘的距离占比
+	/// </summary>
+	/// <param name="parentSize"></param>
+	/// <param name="parentMinCorner"></param>
+	/// <param name="corner"></param>
+	/// <param name="anchor"></param>
+	/// <returns></returns>
 	public Vector2 GetCornerScale(Vector2 parentSize, Vector3 parentMinCorner, Vector3 corner, Vector2 anchor)
 	{
 		var anchorPos = Vector2.Scale(anchor, parentSize);
@@ -61,7 +69,6 @@ public class ScaleLayoutGroup : LayoutGroup
 		float x = (cornerPos.x - anchorPos.x) / parentSize.x;
 		float y = (cornerPos.y - anchorPos.y) / parentSize.y;
 		Vector2 scale = new Vector2(x, y);
-		Debug.Log("cornerPos  " + cornerPos + " anchorPos: " + anchorPos + " parentSize:" + parentSize);
 		return scale;
 	}
 
